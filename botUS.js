@@ -1,6 +1,9 @@
-const puppeteer = require('puppeteer');
-const request = require('request');
+const puppeteer = require('puppeteer-extra');
+const SMSActivate = require('sms-activate')
+// const request = require('request');
 const fs = require('fs');
+const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+puppeteer.use(StealthPlugin());
 
 var emailVal = 'ENTER EMAIL NAME e.g MyEmail98' + '.' + (Math.floor((Math.random() * 9000) + 1000)).toString() + 'ENTER EMAIL SERVICE e.g @gmail.com';
 var smsEmail = 'ENTER GETSMSCODE.COM EMAIL ADDRESS';
@@ -63,8 +66,6 @@ function callbacktwo(error, response, body) {
   }
 }
 
-
-
 console.log("The Bot is starting...");
 
 (async () => {
@@ -73,6 +74,7 @@ console.log("The Bot is starting...");
 
   if(proxyUrl != ''){
     browser = await puppeteer.launch({
+      executablePath: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
         args: ['--proxy-server='+ proxyUrl], headless: false, slowMo: 150,
     });
     page = await browser.newPage();
@@ -85,7 +87,7 @@ console.log("The Bot is starting...");
       });
   }
   }else{
-    browser = await puppeteer.launch({headless: false, slowMo: 150});
+    browser = await puppeteer.launch({executablePath: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",headless: false, slowMo: 150});
     page = await browser.newPage();
   }
 
