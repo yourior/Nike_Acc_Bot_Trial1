@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer-extra');
 const SMSActivate = require('sms-activate')
 // const request = require('request');
-const fs = require('fs');
+const fs = require('fs').promises;
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 puppeteer.use(StealthPlugin());
 
@@ -22,7 +22,7 @@ var userpass;
 
 // From Main DashBoard
 Dashboard_Signup_1 = '#gen-nav-commerce-header-v2 > div.pre-l-header-container > div.pre-l-brand-header.d-sm-h.d-lg-b.z3 > div > div > div:nth-child(3) > div > a';
-
+Dashboard_Signup_2 = '#\\39 a519619-fe20-4cc4-943f-3c70a8e36fe1 > div > div > div.YEqpdVMc.cta-container.hasText > a';
 //GET DOM TRAVERSAL VALUES
 const AcceptCookies = '#cookie-settings-layout > div > div > div > div.ncss-row.mt5-sm.mb7-sm > div:nth-child(2) > button';
 const loginBtn = 'li.member-nav-item.d-sm-ib.va-sm-m > button';
@@ -97,7 +97,11 @@ function callbacktwo(error, response, body) {
         console.log("Message: " + themessage);
     }
 }
-
+function delay(time) {
+  return new Promise(function(resolve) { 
+      setTimeout(resolve, time)
+  });
+}
 console.log("The Bot is starting...");
 try {
 (async () => {
@@ -147,25 +151,36 @@ try {
         });
       page = await browser.newPage();
     }
-    // await page.goto('https://www.nike.com/vn/launch');
-    await page.goto('https://www.nike.com/vn');
+    // await page.goto('https://www.nike.com/vn/launch',{waitUntil: 'networkidle2'});
+    await page.goto('https://www.nike.com/vn',{waitUntil: 'networkidle2'});
       await page.setViewport({ width: 1200, height: 800 });
-  
-      // await page.click(AcceptCookies);
-      // console.log("Accepted Cookies...");
-  
-      await page.waitFor(1000);
-  
+      //HUMAN INTERACTION TIMELINE
+      console.log("Need Human Interaction... for 5 sec");
+      await page.waitForTimeout(5000);
+      //////////////////////////////////
+      //COOKIE
+      console.log("Waiting for Cookies...");
+      const cookies = await page.cookies();
+      console.log("Accepted Cookies...");
+      console.log("Saving Cookies...");
+      await fs.writeFile('./cookies.json', JSON.stringify(cookies, null, 2));
+      console.log("Cookies Saved...");
+      // await page.waitForTimeout(1000);
+      await delay(1000);
+      /////////////////////////////////
       // await page.click(loginBtn);
-
       // console.log("Login Button Clicked...")
-  
+      
       // await page.click(registerBtn);
       await page.click(Dashboard_Signup_1);
+      await page.waitForNavigation({waitUntil: 'networkidle2'});
+      await page.click(Dashboard_Signup_2);
+      await page.waitForNavigation({waitUntil: 'networkidle2'});
+      // await page.waitForNavigation({waitUntil: 'networkidle2'});
       console.log("Register Button Clicked");
   
-      await page.waitFor(2000);
-   
+      // await page.waitForTimeout(2000);
+      await page.waitForSelector(email,{visible: true, hidden: false});
       console.log("email: " + emailVal);
       await page.type(email, emailVal);
       console.log("entered email");
@@ -181,7 +196,8 @@ try {
       await page.click(gender);
   
       console.log("waiting 0.5s");
-      await page.waitFor(500);
+      // await page.waitForTimeout(500);
+      await delay(500);
       console.log("waiting done");
   
       await page.click(submit);
@@ -202,7 +218,7 @@ try {
             console.log("Phone number: " + phoneNum);
   
             console.log("waiting 5s");
-            await page.waitFor(5000); 
+            await page.waitForTimeout(5000); 
             console.log("waiting done");
             await page.screenshot({path: 'screenshot.png'});
             await page.click(phone);
@@ -210,7 +226,7 @@ try {
             console.log("entered phone number");
   
             console.log("waiting 2s");
-            await page.waitFor(2000);
+            await page.waitForTimeout(2000);
             console.log("waiting done");
   
             await page.click(sendNum);
