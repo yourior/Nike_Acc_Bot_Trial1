@@ -1,9 +1,12 @@
 const puppeteer = require('puppeteer-extra');
-const SMSActivate = require('sms-activate')
+const SMSActivate = require('sms-activate');
+const { createCursor } = require ("ghost-cursor");
+const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 // const request = require('request');
 const fs = require('fs').promises;
-const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 puppeteer.use(StealthPlugin());
+
+const {installMouseHelper} = require('./mouse-view');
 
 var emailVal = 'TesterEmail' + '.' + (Math.floor((Math.random() * 9000) + 1000)).toString() + '@nguyenluck.com';
 var smsEmail = 'ENTER GETSMSCODE.COM EMAIL ADDRESS';
@@ -115,6 +118,7 @@ console.log("The Bot is starting...");
 try {
 (async () => {
     var page;
+    var cursor;
     if(proxyUrl != '')
     {
           // const page = await browser.newPage();
@@ -136,6 +140,7 @@ try {
             '--lang=en-US,en',
             '--window-size=1920x1080',
             '--disable-extensions',
+            '--disable-blink-features=AutomationControlled',
             '--proxy-server='+ proxyUrl
           ], 
           headless: false, 
@@ -144,7 +149,7 @@ try {
         });
       
       page = await browser.newPage();
-  
+      cursor = createCursor(page);
       if(proxyUser != '' &&proxyPass != ''){
       	console.log("authenticating proxy user/pass");
         await page.authenticate({ 
@@ -172,7 +177,8 @@ try {
               '--disable-extensions',
               '--disable-web-security',
               '--disable-features=IsolateOrigins',
-              '--disable-site-isolation-trials'
+              '--disable-site-isolation-trials',
+              '--disable-blink-features=AutomationControlled'
               // '--proxy-server='+ proxyUrl
             ],
             // args: ['--proxy-server='+ proxyUrl], 
@@ -180,65 +186,88 @@ try {
             slowMo: 150,
         });
       page = await browser.newPage();
+      cursor = createCursor(page);
     }
+    await installMouseHelper(page);
     // await page.goto('https://www.nike.com/vn/launch',{waitUntil: 'networkidle2'});
     await page.goto('https://www.nike.com/vn',{waitUntil: 'networkidle2'});
       await page.setViewport({ width: 1200, height: 800 });
       //HUMAN INTERACTION TIMELINE
-      console.log("Need Human Interaction... for 10 sec");
-      await page.waitForTimeout(10000);
+      // console.log("Need Human Interaction... for 10 sec");
+      // await page.waitForTimeout(10000);
       //////////////////////////////////
       //COOKIE
 
-      console.log("Waiting for Cookies...");
-      const cookies = await page.cookies();
-      // console.log("Reuse Cookies...");
-      // ReuseCookies(page);
-      console.log("Accepted Cookies...");
-      console.log("Saving Cookies...");
-      await fs.writeFile('./cookies.json', JSON.stringify(cookies, null, 2));
-      console.log("Cookies Saved...");
+      // console.log("Waiting for Cookies...");
+      // const cookies = await page.cookies();
+      // // console.log("Reuse Cookies...");
+      // // ReuseCookies(page);
+      // console.log("Accepted Cookies...");
+      // console.log("Saving Cookies...");
+      // await fs.writeFile('./cookies.json', JSON.stringify(cookies, null, 2));
+      // console.log("Cookies Saved...");
       // await page.waitForTimeout(1000);
-      await delay(2000);
+      // await delay(5000);
       /////////////////////////////////
-      // await page.click(loginBtn);
-      // console.log("Login Button Clicked...")
-      await page.goto('https://www.nike.com/vn',{waitUntil: 'networkidle2'}); //refresh
-      // await page.click(registerBtn);
-      await page.click(Dashboard_Signup_1);
+      console.log("Looking for register Button (1)");
+      await page.waitForSelector(Dashboard_Signup_1,{visible: true, hidden: false});
+      await cursor.move(Dashboard_Signup_1);
+      await cursor.click();
       await page.waitForNavigation({waitUntil: 'networkidle2'});
-      await delay(2000);
-      await page.click(Dashboard_Signup_2);
+      console.log("Register Button (1) Clicked");
+      // await delay(5000);
+      console.log("Looking for register Button (2)");
+      await page.waitForSelector(Dashboard_Signup_2);
+      await cursor.move(Dashboard_Signup_2);
+      await cursor.click();
       await page.waitForNavigation({waitUntil: 'networkidle2'});
-      await delay(2000);
-      // await page.waitForNavigation({waitUntil: 'networkidle2'});
-      console.log("Register Button Clicked");
+      console.log("Register Button (2) Clicked");
   
       // await page.waitForTimeout(2000);
+      console.log("Looking for Email TextBox");
       await page.waitForSelector(email,{visible: true, hidden: false});
       console.log("email: " + emailVal);
+      await cursor.click(email);
       await page.type(email, emailVal);
       console.log("entered email");
   
+      console.log("Looking for Password TextBox");
+      await page.waitForSelector(password,{visible: true, hidden: false});
+      await cursor.click(password);
       await page.type(password, passwordVal);
-  
-      await page.type(fName, fNameVal);
-  
-      await page.type(sName, sNameVal);
-  
-      await page.type(dob, bDayVal);
-  
-      await page.click(gender);
+      console.log("entered Password");
 
-      console.log("waiting 0.5s");
-      // await page.waitForTimeout(500);
-      await delay(500);
-      console.log("waiting done");
-  
-      await page.click(submit);
+      console.log("Looking for Fname TextBox");
+      await page.waitForSelector(fName,{visible: true, hidden: false});
+      await cursor.click(fName);
+      await page.type(fName, fNameVal);
+      console.log("entered Fname");
+
+      console.log("Looking for sName TextBox");
+      await page.waitForSelector(sName,{visible: true, hidden: false});
+      await cursor.click(sName);
+      await page.type(sName, sNameVal);
+      console.log("entered sName");
+
+      console.log("Looking for DOB TextBox");
+      await page.waitForSelector(dob,{visible: true, hidden: false});
+      await cursor.click(dob);
+      await page.type(dob, bDayVal);
+      console.log("entered DOB");
+
+      console.log("Looking for Gender Button");
+      await page.waitForSelector(gender,{visible: true, hidden: false});
+      await cursor.click(gender);
+      console.log("entered Gender Button");
+
+      console.log("Looking for Submit Button");
+      await page.waitForSelector(submit,{visible: true, hidden: false});
+      await cursor.click(submit);
+      // await page.click(submit);
       console.log("submitted");
+
       console.log("email : "+emailVal+" - pass : "+passwordVal);
-      await delay(50000);
+      await delay(5000);
     try{
       //   request(options, callback);
         await sleep(10000);

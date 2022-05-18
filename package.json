@@ -11,6 +11,8 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.27.2",
+    "ghost-cursor": "^1.1.10",
+    "puppeteer": "^14.1.0",
     "puppeteer-core": "^14.1.0",
     "puppeteer-extra": "^3.2.3",
     "puppeteer-extra-plugin-stealth": "^2.9.0",
