@@ -105,6 +105,12 @@ function delay(time) {
       setTimeout(resolve, time)
   });
 }
+async function ReuseCookies(page)
+{
+  const cookiesString = await fs.readFile('./diaoCookies_edited.json');
+  const cookies = JSON.parse(cookiesString);
+  await page.setCookie(...cookies);
+}
 console.log("The Bot is starting...");
 try {
 (async () => {
@@ -179,12 +185,15 @@ try {
     await page.goto('https://www.nike.com/vn',{waitUntil: 'networkidle2'});
       await page.setViewport({ width: 1200, height: 800 });
       //HUMAN INTERACTION TIMELINE
-      console.log("Need Human Interaction... for 5 sec");
-      await page.waitForTimeout(5000);
+      console.log("Need Human Interaction... for 10 sec");
+      await page.waitForTimeout(10000);
       //////////////////////////////////
       //COOKIE
+
       console.log("Waiting for Cookies...");
       const cookies = await page.cookies();
+      // console.log("Reuse Cookies...");
+      // ReuseCookies(page);
       console.log("Accepted Cookies...");
       console.log("Saving Cookies...");
       await fs.writeFile('./cookies.json', JSON.stringify(cookies, null, 2));
@@ -194,7 +203,7 @@ try {
       /////////////////////////////////
       // await page.click(loginBtn);
       // console.log("Login Button Clicked...")
-      
+      await page.goto('https://www.nike.com/vn',{waitUntil: 'networkidle2'}); //refresh
       // await page.click(registerBtn);
       await page.click(Dashboard_Signup_1);
       await page.waitForNavigation({waitUntil: 'networkidle2'});
@@ -220,7 +229,7 @@ try {
       await page.type(dob, bDayVal);
   
       await page.click(gender);
-  
+
       console.log("waiting 0.5s");
       // await page.waitForTimeout(500);
       await delay(500);
