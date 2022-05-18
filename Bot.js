@@ -45,6 +45,9 @@ function sleep(ms) {
    return new Promise(resolve => setTimeout(resolve, ms));
 }
 var chromeFlags = [
+  '--disable-web-security',
+  '--disable-features=IsolateOrigins',
+  '--disable-site-isolation-trials',
   '--no-sandbox',
   '--disable-setuid-sandbox',
   '--disable-accelerated-2d-canvas',
@@ -111,6 +114,9 @@ try {
           // const page = await browser.newPage();
     	browser = await puppeteer.launch({
           args: [
+            '--disable-web-security',
+            '--disable-features=IsolateOrigins',
+            '--disable-site-isolation-trials',
             '--no-sandbox',
             '--disable-setuid-sandbox',
             '--disable-accelerated-2d-canvas',
@@ -124,7 +130,7 @@ try {
             '--lang=en-US,en',
             '--window-size=1920x1080',
             '--disable-extensions',
-            // '--proxy-server='+ proxyUrl
+            '--proxy-server='+ proxyUrl
           ], 
           headless: false, 
           slowMo: 150,
@@ -144,7 +150,25 @@ try {
       browser = await puppeteer.launch(
         { 
             executablePath: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
-            args: chromeFlags,
+            args: [
+              '--no-sandbox',
+              '--disable-setuid-sandbox',
+              '--disable-accelerated-2d-canvas',
+              '--no-zygote',
+              '--renderer-process-limit=1',
+              '--no-first-run',
+              '--ignore-certificate-errors',
+              '--ignore-certificate-errors-spki-list',
+              '--disable-dev-shm-usage',
+              '--disable-infobars',
+              '--lang=en-US,en',
+              '--window-size=1920x1080',
+              '--disable-extensions',
+              '--disable-web-security',
+              '--disable-features=IsolateOrigins',
+              '--disable-site-isolation-trials'
+              // '--proxy-server='+ proxyUrl
+            ],
             // args: ['--proxy-server='+ proxyUrl], 
             headless: false, 
             slowMo: 150,
@@ -166,7 +190,7 @@ try {
       await fs.writeFile('./cookies.json', JSON.stringify(cookies, null, 2));
       console.log("Cookies Saved...");
       // await page.waitForTimeout(1000);
-      await delay(1000);
+      await delay(2000);
       /////////////////////////////////
       // await page.click(loginBtn);
       // console.log("Login Button Clicked...")
@@ -174,8 +198,10 @@ try {
       // await page.click(registerBtn);
       await page.click(Dashboard_Signup_1);
       await page.waitForNavigation({waitUntil: 'networkidle2'});
+      await delay(2000);
       await page.click(Dashboard_Signup_2);
       await page.waitForNavigation({waitUntil: 'networkidle2'});
+      await delay(2000);
       // await page.waitForNavigation({waitUntil: 'networkidle2'});
       console.log("Register Button Clicked");
   
@@ -203,6 +229,7 @@ try {
       await page.click(submit);
       console.log("submitted");
       console.log("email : "+emailVal+" - pass : "+passwordVal);
+      await delay(50000);
     try{
       //   request(options, callback);
         await sleep(10000);
