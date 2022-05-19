@@ -27,7 +27,8 @@ var RegionVal='VN';
 // From Main DashBoard
 const Dashboard_Signup_1 = '#gen-nav-commerce-header-v2 > div.pre-l-header-container > div.pre-l-brand-header.d-sm-h.d-lg-b.z3 > div > div > div:nth-child(3) > div > a';
 const Dashboard_Signup_2 = '#\\39 a519619-fe20-4cc4-943f-3c70a8e36fe1 > div > div > div.YEqpdVMc.cta-container.hasText > a';
-const Region_Signup = '#\\32 427789a-c70c-4397-879f-0d15a1d77806';
+const Region_Signup = 'select#f1894b3e-291e-4a4b-8ce8-6e3727e84b9f';
+
 //GET DOM TRAVERSAL VALUES
 const AcceptCookies = '#cookie-settings-layout > div > div > div > div.ncss-row.mt5-sm.mb7-sm > div:nth-child(2) > button';
 const loginBtn = 'li.member-nav-item.d-sm-ib.va-sm-m > button';
@@ -217,7 +218,7 @@ try {
       await cursor.move(Dashboard_Signup_1);
       await cursor.click();
       console.log("Register Button (1) Clicked");
-      // await page.waitForNavigation({waitUntil: 'networkidle2'});
+      await page.waitForNavigation({waitUntil: 'networkidle0'});
       // await page.waitForNavigation();
       // await delay(5000);
       console.log("Looking for register Button (2)");
@@ -225,6 +226,7 @@ try {
       await cursor.move(Dashboard_Signup_2);
       await cursor.click();
       console.log("Register Button (2) Clicked");
+      await page.waitForNavigation({ waitUntil: 'networkidle0' });
       // await page.waitForNavigation();
   
       // await page.waitForTimeout(2000);
@@ -264,12 +266,13 @@ try {
       await page.type(dob, bDayVal, { delay: Rando_Delay });
       console.log("entered DOB");
 
-      // console.log("Looking for Region TextBox");
-      // await page.waitForSelector(Region_Signup);
-      // await cursor.click(Region_Signup);
-      // Rando_Delay = Math.floor(Math.random() * 100) + 50;
-      // await page.type(Region_Signup, RegionVal, { delay: Rando_Delay });
-      // console.log("entered Region");
+      console.log("Looking for Region TextBox");
+      await page.waitForSelector(Region_Signup);
+      await cursor.click(Region_Signup);
+      Rando_Delay = Math.floor(Math.random() * 100) + 50;
+      // await page.select(Region_Signup, RegionVal, { delay: Rando_Delay });
+      await page.type(Region_Signup, RegionVal, { delay: Rando_Delay });
+      console.log("entered Region");
 
       console.log("Looking for Gender Button");
       await page.waitForSelector(gender_male,{visible: true, hidden: false});
