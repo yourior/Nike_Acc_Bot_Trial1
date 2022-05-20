@@ -24,6 +24,8 @@ var phoneNum;
 var userpass;
 var RegionVal='Vietnam';
 var NikeWeb = 'https://www.nike.com/';
+var Chrome_Ubuntu = '/usr/bin/google-chrome';
+var Chrome_Windows = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 // From Main DashBoard
 const Menu_Option_NONFULL = '#MobileMenuButton';
 const DashBoard_SignUp_NONFULL = '#gen-nav-commerce-header-v2 > div.pre-l-header-container > header > div > div.pre-l-wrapper.mauto-sm.d-sm-flx > div.pre-l-nav-box.flx-gro-sm-1 > nav > div.pre-mobilemenu.d-sm-ib.d-lg-h.z2.pre-show > div.pre-panel.pre-panel-root > div > div.pre-mobile-btn-group.pre-login-light.mr3-sm.pt12-sm > div > a';
@@ -124,6 +126,8 @@ async function ReuseCookies(page)
 console.log("The Bot is starting...");
 (
 async () => {
+  var Chrome = Chrome_Ubuntu;
+  // var Chrome = Chrome_Windows;
   var trytest = 5 ,attempt=0,isSuccess=false;
   while(trytest>attempt)
   {
@@ -137,11 +141,12 @@ async () => {
             // const page = await browser.newPage();
         browser = await puppeteer.launch({
             args: [
+              '--use-gl=egl',
               // '--disable-web-security',
               // '--disable-features=IsolateOrigins',
               // '--disable-site-isolation-trials',
-              // '--no-sandbox',
-              // '--disable-setuid-sandbox',
+              '--no-sandbox',
+              '--disable-setuid-sandbox',
               // '--disable-accelerated-2d-canvas',
               // '--no-zygote',
               // '--renderer-process-limit=1',
@@ -158,7 +163,7 @@ async () => {
             ], 
             headless: false, 
             // slowMo: 150,
-            executablePath: '%ProgramFiles%\Google\Chrome\Application\chrome.exe' ,
+            executablePath: Chrome ,
             // devtools: true
           });
         
@@ -175,10 +180,11 @@ async () => {
         browser = await puppeteer.launch(
           { 
               // devtools: true,
-              executablePath: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+              executablePath: Chrome,
               args: [
-                // '--no-sandbox',
-                // '--disable-setuid-sandbox',
+                '--use-gl=egl',
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
                 // '--disable-accelerated-2d-canvas',
                 // '--no-zygote',
                 // '--renderer-process-limit=1',
@@ -196,6 +202,7 @@ async () => {
                 // '--disable-site-isolation-trials',
                 // '--disable-blink-features=AutomationControlled'
                 // '--proxy-server='+ proxyUrl
+                
               ],
               // args: ['--proxy-server='+ proxyUrl], 
               headless: false, 
@@ -242,16 +249,16 @@ async () => {
         var Rando_Delay;
         console.log("Looking for register Button (1)");
         // // FULL VIEW
-        // await page.waitForSelector(Dashboard_Signup_1,{visible: true, hidden: false});
-        // await cursor.move(Dashboard_Signup_1);
-        // await cursor.click();
+        await page.waitForSelector(Dashboard_Signup_1,{visible: true, hidden: false});
+        await cursor.move(Dashboard_Signup_1);
+        await cursor.click();
         // //////////////////
-        await page.waitForSelector(Menu_Option_NONFULL,{visible: true, hidden: false});
-        await cursor.move(Menu_Option_NONFULL);
-        await cursor.click();
-        await page.waitForSelector(DashBoard_SignUp_NONFULL,{visible: true, hidden: false});
-        await cursor.move(DashBoard_SignUp_NONFULL);
-        await cursor.click();
+        // await page.waitForSelector(Menu_Option_NONFULL,{visible: true, hidden: false});
+        // await cursor.move(Menu_Option_NONFULL);
+        // await cursor.click();
+        // await page.waitForSelector(DashBoard_SignUp_NONFULL,{visible: true, hidden: false});
+        // await cursor.move(DashBoard_SignUp_NONFULL);
+        // await cursor.click();
         console.log("Register Button (1) Clicked");
         // await page.waitForNavigation({waitUntil: 'networkidle0'});
         // await page.waitForNavigation();
