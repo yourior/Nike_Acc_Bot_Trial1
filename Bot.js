@@ -5,27 +5,29 @@ const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 // const request = require('request');
 const fs = require('fs').promises;
 puppeteer.use(StealthPlugin());
+const AdblockerPlugin = require('puppeteer-extra-plugin-adblocker')
+puppeteer.use(AdblockerPlugin({ blockTrackers: true }))
 
 const {installMouseHelper} = require('./mouse-view');
 
-var emailVal = 'TesterEmail' + '.' + (Math.floor((Math.random() * 9000) + 1000)).toString() + '@nguyenluck.com';
-var smsEmail = 'ENTER GETSMSCODE.COM EMAIL ADDRESS';
-var token = 'ENTER GETSMSCODE API TOKEN';
-var passwordVal = 'Alkaline@tester123';
-var fNameVal = 'BAKAYAROU';
-var sNameVal = 'BAKA';
-var bDayVal = '01/05/19'+(Math.floor((Math.random() * (99-55)) + 55)).toString(); //Replace with your birthday if you wish.
-var proxyUrl = ''; //if proxy exists enter it in format IP:PORT, if not leave blank
-var proxyUser = ''; //If proxy username/pass exists insert it here if not leave both variables blank
-var proxyPass = '';
-var info;
+// var emailVal = 'TesterEmail' + '.' + (Math.floor((Math.random() * 9000) + 1000)).toString() + '@nguyenluck.com';
+// var smsEmail = 'ENTER GETSMSCODE.COM EMAIL ADDRESS';
+// var token = 'ENTER GETSMSCODE API TOKEN';
+// var passwordVal = 'Alkaline@tester123';
+// var fNameVal = 'BAKAYAROU';
+// var sNameVal = 'BAKA';
+// var bDayVal = '01/05/19'+(Math.floor((Math.random() * (99-55)) + 55)).toString(); //Replace with your birthday if you wish.
+// var proxyUrl = ''; //if proxy exists enter it in format IP:PORT, if not leave blank
+// var proxyUser = ''; //If proxy username/pass exists insert it here if not leave both variables blank
+// var proxyPass = '';
+// var info;
 var themessage;
-var phoneNum;
-var userpass;
-var RegionVal='Vietnam';
+// var phoneNum;
+// var userpass;
+// var RegionVal='Vietnam';
 var NikeWeb = 'https://www.nike.com/';
-var Chrome_Ubuntu = '/usr/bin/google-chrome';
-var Chrome_Windows = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
+// var Chrome_Ubuntu = '/usr/bin/google-chrome';
+// var Chrome_Windows = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 // From Main DashBoard
 const Menu_Option_NONFULL = '#MobileMenuButton';
 const DashBoard_SignUp_NONFULL = '#gen-nav-commerce-header-v2 > div.pre-l-header-container > header > div > div.pre-l-wrapper.mauto-sm.d-sm-flx > div.pre-l-nav-box.flx-gro-sm-1 > nav > div.pre-mobilemenu.d-sm-ib.d-lg-h.z2.pre-show > div.pre-panel.pre-panel-root > div > div.pre-mobile-btn-group.pre-login-light.mr3-sm.pt12-sm > div > a';
@@ -46,6 +48,7 @@ const fName = '.firstName.nike-unite-component.empty > input[type="text"]';
 const sName = '.lastName.nike-unite-component.empty > input[type="text"]';
 const dob = 'input[type="date"]';
 const gender_male = 'li:nth-child(1) > input[type="button"]';
+const gender_female = '#\\39 f257672-1e5e-47bd-8aa6-e8bab48284c9 > input[type=button]';
 const submit = '.joinSubmit.nike-unite-component > input[type="button"]';
 const phone = 'div.sendCode > div.mobileNumber-div > input';
 const sendNum = '#nike-unite-progressiveForm > div > div > input[type="button"]';
@@ -123,9 +126,10 @@ async function ReuseCookies(page)
   const cookies = JSON.parse(cookiesString);
   await page.setCookie(...cookies);
 }
-console.log("The Bot is starting...");
-(
-async () => {
+
+exports.runBot = async (Chrome,proxyUrl,proxyUser,proxyPass,emailVal,passwordVal,fNameVal,sNameVal,bDayVal,
+  GenderVal) => {
+  console.log("The Bot is starting...");
   var Chrome = Chrome_Ubuntu;
   // var Chrome = Chrome_Windows;
   var trytest = 5 ,attempt=0,isSuccess=false;
@@ -236,8 +240,10 @@ async () => {
         {
           console.log("Counting.... "+WaitCount);
           WaitCount++;
-          await page.waitForTimeout(1000);
+          await delay(1000);
         }
+        console.log("Stop touching :)");
+        await delay(2000);
         ////////////////////////////////
         //Get Region 
         console.log("Get Region Vietnam");
@@ -318,8 +324,15 @@ async () => {
         // console.log("entered Region");
   
         console.log("Looking for Gender Button");
-        await page.waitForSelector(gender_male,{visible: true, hidden: false});
-        await cursor.click(gender_male);
+        if(genderVal=='m')
+        {
+          await page.waitForSelector(gender_male,{visible: true, hidden: false});
+          await cursor.click(gender_male);
+        }else if(genderval=='f')
+        {
+          await page.waitForSelector(gender_female,{visible: true, hidden: false});
+          await cursor.click(gender_female);
+        }
         console.log("entered Gender Button");
   
         console.log("Looking for Submit Button");
@@ -451,6 +464,6 @@ async () => {
     
   }
   process.exit();
-    })();
+    };
 
 

@@ -10,11 +10,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "automation-extra-plugin": "4.2.1-next.587",
     "axios": "^0.27.1",
     "ghost-cursor": "^1.1.10",
     "puppeteer": "^14.1.0",
     "puppeteer-core": "^14.1.0",
     "puppeteer-extra": "^3.2.3",
+    "puppeteer-extra-plugin-adblocker": "^2.12.0",
     "puppeteer-extra-plugin-stealth": "^2.9.0",
     "sms-activate": "^1.0.1"
   }
