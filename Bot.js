@@ -30,14 +30,22 @@ var NikeWeb = 'https://www.nike.com/';
 // var Chrome_Windows = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 // From Main DashBoard
 const Menu_Option_NONFULL = '#MobileMenuButton';
-const DashBoard_SignUp_NONFULL = '#gen-nav-commerce-header-v2 > div.pre-l-header-container > header > div > div.pre-l-wrapper.mauto-sm.d-sm-flx > div.pre-l-nav-box.flx-gro-sm-1 > nav > div.pre-mobilemenu.d-sm-ib.d-lg-h.z2.pre-show > div.pre-panel.pre-panel-root > div > div.pre-mobile-btn-group.pre-login-light.mr3-sm.pt12-sm > div > a';
+const DashBoard_SignUp_NONFULL = '#hf_title_joinus_membership';
 const Dashboard_Signup_1 = '#gen-nav-commerce-header-v2 > div.pre-l-header-container > div.pre-l-brand-header.d-sm-h.d-lg-b.z3 > div > div > div:nth-child(3) > div > a';
 const Dashboard_Signup_2 = '#\\39 a519619-fe20-4cc4-943f-3c70a8e36fe1 > div > div > div.YEqpdVMc.cta-container.hasText > a';
 const Region_Signup = '#\\34 192d36c-1096-47c7-8637-dd56783efd1b';
 const Email_Signup = '#f0735cfc-e551-49c2-8fb3-436310735e57';
 const Dasboard_RegionPicker = '#gen-nav-footer > footer > div > div.l-sub-footer.ncss-row > div.ncss-col-sm-12.ncss-col-md-6.pt3-sm.pl5-sm.pl2-md > div > a';
 const Dashboard_RegionPicker_VN = '#gen-nav-footer > nav > div > div > div:nth-child(3) > div > a:nth-child(16)';
-
+const ProfileClick = '#gen-nav-commerce-header-v2 > div.pre-l-header-container > header > div > div.pre-l-wrapper.mauto-sm.d-sm-flx > div.pre-l-nav-box.flx-gro-sm-1 > nav > div.pre-mobilemenu.d-sm-ib.d-lg-h.z2.pre-show > div.pre-panel.pre-panel-root > button.nav-btn.p0-sm.pre-link.pre-account-link > div > div';
+const ProfileClick_step2 ='#gen-nav-commerce-header-v2 > div.pre-l-header-container > header > div > div.pre-l-wrapper.mauto-sm.d-sm-flx > div.pre-l-nav-box.flx-gro-sm-1 > nav > div.pre-mobilemenu.d-sm-ib.d-lg-h.z2.pre-show > div.pre-panel.pre-my-account-panel > a:nth-child(8)';
+const ProfileClick_step3 = '#settings > div.css-5d5ho6 > div.ncss-headline-lg-brand.ncss-col-sm-12.ncss-col-lg-4.pb8-sm.pr6-lg.pl0-sm.va-sm-t.css-bdqskz > div:nth-child(1) > div';
+const AddNumber = '#modal-root > div > div > div > div:nth-child(2) > div > form > div.account-form > div.mex-mobile-input-wrapper.ncss-col-sm-12.ncss-col-md-12.pl0-sm.pr0-sm.pb3-sm > div > div > div > div.ncss-col-sm-6.ta-sm-r.va-sm-m.flx-jc-sm-fe.d-sm-iflx > button';
+const FillNumber = '#e079ab86-520f-4e6f-8165-1d7cf7eb154e';
+const Send_OTPButton = '#bc48f9f3-c784-48c1-9397-18fb4504bbd5';
+const OTPFill = '#\\38 11824e8-cb24-482c-a1d7-f93de0355b02';
+const AgreeButtonOTP = '#progressiveMobile > label';
+const OTPContinue = '#ef18c42e-3b75-4fb4-ab6c-ace57ef4e449';
 //GET DOM TRAVERSAL VALUES
 const AcceptCookies = '#cookie-settings-layout > div > div > div > div.ncss-row.mt5-sm.mb7-sm > div:nth-child(2) > button';
 const loginBtn = 'li.member-nav-item.d-sm-ib.va-sm-m > button';
@@ -103,10 +111,10 @@ var chromeFlags = [
 // }
 
 //values for phone number request
-const options = {
-    url: 'http://www.getsmscode.com/vndo.php?action=getmobile&username='+smsEmail+'&token='+token+'&cocode=uk&pid=462',
-    headers: {'User-Agent': 'request'}
-};
+// const options = {
+//     url: 'http://www.getsmscode.com/vndo.php?action=getmobile&username='+smsEmail+'&token='+token+'&cocode=uk&pid=462',
+//     headers: {'User-Agent': 'request'}
+// };
 
 //callback for text message response
 function callbacktwo(error, response, body) {
@@ -126,95 +134,11 @@ async function ReuseCookies(page)
   const cookies = JSON.parse(cookiesString);
   await page.setCookie(...cookies);
 }
-
-exports.runBot = async (Chrome,proxyUrl,proxyUser,proxyPass,emailVal,passwordVal,fNameVal,sNameVal,bDayVal,
-  GenderVal) => {
+// var page;
+exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayVal,GenderVal,OTPProvider='SMS-Activate',OTP_API) => {
   console.log("The Bot is starting...");
-  var Chrome = Chrome_Ubuntu;
-  // var Chrome = Chrome_Windows;
-  var trytest = 5 ,attempt=0,isSuccess=false;
-  while(trytest>attempt)
-  {
-    try {
-      attempt++;
-      isSuccess=false;
-      var page;
-      var cursor;
-      if(proxyUrl != '')
-      {
-            // const page = await browser.newPage();
-        browser = await puppeteer.launch({
-            args: [
-              '--use-gl=egl',
-              // '--disable-web-security',
-              // '--disable-features=IsolateOrigins',
-              // '--disable-site-isolation-trials',
-              '--no-sandbox',
-              '--disable-setuid-sandbox',
-              // '--disable-accelerated-2d-canvas',
-              // '--no-zygote',
-              // '--renderer-process-limit=1',
-              // '--no-first-run',
-              // '--ignore-certificate-errors',
-              // '--ignore-certificate-errors-spki-list',
-              // '--disable-dev-shm-usage',
-              // '--disable-infobars',
-              '--lang=en-US,en',
-              '--window-size=1920x1080',
-              // '--disable-extensions',
-              // '--disable-blink-features=AutomationControlled',
-              '--proxy-server='+ proxyUrl
-            ], 
-            headless: false, 
-            // slowMo: 150,
-            executablePath: Chrome ,
-            // devtools: true
-          });
-        
-        page = await browser.newPage();
-        cursor = createCursor(page);
-        if(proxyUser != '' &&proxyPass != ''){
-          console.log("authenticating proxy user/pass");
-          await page.authenticate({ 
-            username: proxyUser, 
-            password: proxyPass 
-          });
-      }
-      }else{
-        browser = await puppeteer.launch(
-          { 
-              // devtools: true,
-              executablePath: Chrome,
-              args: [
-                '--use-gl=egl',
-                '--no-sandbox',
-                '--disable-setuid-sandbox',
-                // '--disable-accelerated-2d-canvas',
-                // '--no-zygote',
-                // '--renderer-process-limit=1',
-                // '--no-first-run',
-                // '--ignore-certificate-errors',
-                // '--ignore-certificate-errors-spki-list',
-                // '--disable-dev-shm-usage',
-                // '--disable-infobars',
-                
-                '--lang=en-US,en',
-                // '--window-size=1280x720',
-                // '--disable-extensions',
-                // '--disable-web-security',
-                // '--disable-features=IsolateOrigins',
-                // '--disable-site-isolation-trials',
-                // '--disable-blink-features=AutomationControlled'
-                // '--proxy-server='+ proxyUrl
-                
-              ],
-              // args: ['--proxy-server='+ proxyUrl], 
-              headless: false, 
-              // slowMo: 150,
-          });
-        page = await browser.newPage();
-        cursor = createCursor(page);
-      }
+  try{
+      cursor = createCursor(page);
       await Promise.all([
         page.coverage.startJSCoverage(),
         page.coverage.startCSSCoverage(),
@@ -255,16 +179,16 @@ exports.runBot = async (Chrome,proxyUrl,proxyUser,proxyPass,emailVal,passwordVal
         var Rando_Delay;
         console.log("Looking for register Button (1)");
         // // FULL VIEW
-        await page.waitForSelector(Dashboard_Signup_1,{visible: true, hidden: false});
-        await cursor.move(Dashboard_Signup_1);
-        await cursor.click();
+        // await page.waitForSelector(Dashboard_Signup_1,{visible: true, hidden: false});
+        // await cursor.move(Dashboard_Signup_1);
+        // await cursor.click();
         // //////////////////
-        // await page.waitForSelector(Menu_Option_NONFULL,{visible: true, hidden: false});
-        // await cursor.move(Menu_Option_NONFULL);
-        // await cursor.click();
-        // await page.waitForSelector(DashBoard_SignUp_NONFULL,{visible: true, hidden: false});
-        // await cursor.move(DashBoard_SignUp_NONFULL);
-        // await cursor.click();
+        await page.waitForSelector(Menu_Option_NONFULL,{visible: true, hidden: false});
+        await cursor.move(Menu_Option_NONFULL);
+        await cursor.click();
+        await page.waitForSelector(DashBoard_SignUp_NONFULL,{visible: true, hidden: false});
+        await cursor.move(DashBoard_SignUp_NONFULL);
+        await cursor.click();
         console.log("Register Button (1) Clicked");
         // await page.waitForNavigation({waitUntil: 'networkidle0'});
         // await page.waitForNavigation();
@@ -324,11 +248,11 @@ exports.runBot = async (Chrome,proxyUrl,proxyUser,proxyPass,emailVal,passwordVal
         // console.log("entered Region");
   
         console.log("Looking for Gender Button");
-        if(genderVal=='m')
+        if(GenderVal=='m')
         {
           await page.waitForSelector(gender_male,{visible: true, hidden: false});
           await cursor.click(gender_male);
-        }else if(genderval=='f')
+        }else if(GenderVal=='f')
         {
           await page.waitForSelector(gender_female,{visible: true, hidden: false});
           await cursor.click(gender_female);
@@ -351,13 +275,89 @@ exports.runBot = async (Chrome,proxyUrl,proxyUser,proxyPass,emailVal,passwordVal
         // ReuseCookies(page);
         console.log("Accepted Cookies...");
         console.log("Saving Cookies...");
-        await fs.writeFile('./cookies.json', JSON.stringify(cookies, null, 2));
+        await fs.writeFile('./cookiesSignIn.json', JSON.stringify(cookies, null, 2));
         console.log("Cookies Saved...");
         // await page.waitForTimeout(1000);
         // await delay(5000);
         
         /////////////////////////////////
-  
+        // GO TO PROFILE
+        console.log("Going to Profile");
+        await page.waitForSelector(Menu_Option_NONFULL,{visible: true, hidden: false});
+        await cursor.move(Menu_Option_NONFULL);
+        await cursor.click();
+        await page.waitForSelector(ProfileClick,{visible: true, hidden: false});
+        await cursor.move(ProfileClick);
+        await cursor.click();
+        await page.waitForSelector(ProfileClick_step2,{visible: true, hidden: false});
+        await cursor.move(ProfileClick_step2);
+        await cursor.click();
+        console.log("Go to Profile Section, Looking for Account Setting Button");
+        await page.waitForSelector(ProfileClick_step3,{visible: true, hidden: false});
+        await cursor.move(ProfileClick_step3);
+        await cursor.click();
+        console.log("Account Setting Found");
+
+        console.log("Looking for Add Phone Number Button");
+        await page.waitForSelector(AddNumber,{visible: true, hidden: false});
+        await cursor.move(AddNumber);
+        await cursor.click();
+        console.log("Add Phone Number Button Found");
+        //
+        console.log("Looking for Phone Number Text Box");
+        await page.waitForSelector(FillNumber);
+        await cursor.move(AddNumber);
+        await cursor.click();
+        console.log("Phone Number Text Box Found");
+        console.log("Asking for Phone Number");
+        /////SMS-Activate;
+        var phoneSMS_Activate ;
+        //
+        console.log("Phone Number is Given");
+        console.log("Filling Phone Number");
+        Rando_Delay = Math.floor(Math.random() * 100) + 50;
+        await page.type(AddNumber, phoneSMS_Activate, { delay: Rando_Delay });
+        console.log("Entered Phone Number");
+        console.log("Looking for Send OTP Button");
+        await page.waitForSelector(Send_OTPButton);
+        await cursor.move(Send_OTPButton);
+        await cursor.click();
+        console.log("Send OTP Button Found");
+        console.log("Waiting For OTP");
+        console.log("While Waiting For OTP, System is Looking for OTP TextBox");
+        await page.waitForSelector(OTPFill);
+        await cursor.move(OTPFill);
+        await cursor.click();
+        console.log("OTP TextBox Found");
+        if(OTPProvider == 'OTPProvider')
+        {
+          //SMS-Activate
+          console.log("Still Waiting for OTP");
+
+          console.log("OTP is given");
+          //
+        }
+        console.log("Looking for Agree Button");
+        await page.waitForSelector(AgreeButtonOTP);
+        await cursor.move(AgreeButtonOTP);
+        await cursor.click();
+        console.log("it is agreed");
+        console.log("Looking for Accept Button");
+        await page.waitForSelector(OTPContinue);
+        await cursor.move(OTPContinue);
+        await cursor.click();
+        console.log("OTP is given to Nike");
+
+        console.log("Waiting for Cookies...");
+        cookies = await page.cookies();
+        // console.log("Reuse Cookies...");
+        // ReuseCookies(page);
+        console.log("Accepted Cookies...");
+        console.log("Saving Cookies...");
+        await fs.writeFile('./cookiesSuccess.json', JSON.stringify(cookies, null, 2));
+        console.log("Cookies Saved...");
+
+        // console.log("");
         const [jsCoverage, cssCoverage] = await Promise.all([
           page.coverage.stopJSCoverage(),
           page.coverage.stopCSSCoverage(),
@@ -370,100 +370,27 @@ exports.runBot = async (Chrome,proxyUrl,proxyUser,proxyPass,emailVal,passwordVal
           for (const range of entry.ranges) usedBytes += range.end - range.start - 1;
         }
         console.log(`Bytes used: ${(usedBytes / totalBytes) * 100}%`);
-      // try{
-      //   //   request(options, callback);
-      //     await sleep(10000);
-    
-      //     // if(info.includes("balance")){
-      //     //   console.log("LOW BALANCE: Add money to your getsmscode account. ");
-      //     //   browser.close();
-      //     //   process.exit();
-      //     // }
-    
-      //         phoneNum = info.toString().slice(2);
-    
-      //         console.log("Phone number: " + phoneNum);
-    
-      //         console.log("waiting 5s");
-      //         await page.waitForTimeout(5000); 
-      //         console.log("waiting done");
-      //         await page.screenshot({path: 'screenshot.png'});
-              await page.waitForSelector(phone,{visible: true, hidden: false});
-              await cursor.click(phone);
-              break;
-      //         await page.type(phone, phoneNum);
-      //         console.log("entered phone number");
-    
-      //         console.log("waiting 2s");
-      //         await page.waitForTimeout(2000);
-      //         console.log("waiting done");
-    
-      //         await page.click(sendNum);
-      //         console.log("pressed send number button");
-    
-      //         console.log("Getting Text Message: 15s wait");
-      //         await sleep(15000);
-    
-      //         console.log("Phone Number: " + phoneNum);
-    
-      //     const values = {
-      //            url: 'http://www.getsmscode.com/vndo.php?action=getsms&username='+smsEmail+'&token='+token+'&pid=462&cocode=uk&mobile=44'+phoneNum,
-      //            headers: {'User-Agent': 'request'}
-      //     };
-    
-      //     // await request(values, callbacktwo);
-    
-      //     await sleep(1500);
-    
-      //     if (themessage.includes("Nike")){
-    
-      //     console.log("request complete");
-      //     var theMessaging = themessage.slice(themessage.length-6);
-      //     console.log("Message: " + theMessaging.toString());
-           
-      //     await page.click(enterTheValue);
-      //     await page.type(enterTheValue, theMessaging);
-      //     console.log("entered phone message");
-    
-      //     await sleep(500);
-    
-      //   await page.click(storedSubmit);
-      //   console.log("submitted");
-      //   userpass = (emailVal + ":" + passwordVal);
-      //   console.log(userpass);
-    
-      //   fs.appendFile('Accounts.txt', '\n'+userpass, (err) => {  
-      //       if (err) throw err;
-      //       console.log('Added User/Pass To Accounts.txt!');
-      //   });
-    
-      //     }else{
-      //       console.log("failed to get sms from getsmscode.com");
-      //     }
-    
-      //     await sleep(1000);
-    
-      // }catch(error){
-      //     console.error(error);
-      //     browser.close();
-      //     process.exit();
-      // } 
-    
-      browser.close();
-      // process.exit();
+        
+        return {
+          status : true,
+          Email : emailVal,
+          Pass : passwordVal
+        }
     }catch(err)
     {
-      console.error("Error : "+err);
+      console.error("Create Account Error Log : "+err);
+      var statsReturn;
       if(err.toString().includes("TimeoutError"))
       {
         console.log("Yo Internet too slow / cannot find button");
+        statsReturn = "TimeoutError";
       }
-      browser.close();
-      // process.exit();
+      return {
+        status : await statsReturn
+      }
     }
     
-  }
-  process.exit();
-    };
+    
+};
 
 

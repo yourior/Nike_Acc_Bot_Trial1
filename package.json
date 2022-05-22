@@ -2,12 +2,12 @@
   "name": "nike-bot",
   "version": "1.0.0",
   "description": "Simple Nike Account Creator",
-  "main": "bot.js",
+  "main": "StartPanel.js",
   "scripts": {
-    "start": "Bot.js",
+    "start": "StartPanel.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "YOURIOR",
   "license": "ISC",
   "dependencies": {
     "automation-extra-plugin": "4.2.1-next.587",
