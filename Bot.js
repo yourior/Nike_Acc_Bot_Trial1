@@ -1,5 +1,5 @@
 const puppeteer = require('puppeteer-extra');
-const SMSActivate = require('sms-activate');
+// const SMSActivate = require('sms-activate');
 const { createCursor } = require ("ghost-cursor");
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 // const request = require('request');
@@ -386,11 +386,9 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         statsReturn = "TimeoutError";
       }
       return {
-        status : await statsReturn
+        status : statsReturn
       }
-    }
-    
-    
+    }     
 };
 
 
