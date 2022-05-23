@@ -8,11 +8,11 @@ puppeteer.use(AdblockerPlugin({ blockTrackers: true }))
 
 const {Create }= require('./Bot');
 exports.Browser = async (Module,Chrome,Try,proxyUrl=null,proxyUser=null,proxyPass=null,emailVal,passwordVal,fNameVal=null,sNameVal=null,bDayVal=null,
-    GenderVal=null,OTPProvider=null,OTP_API=null) => {
-    console.log("Generating Browser");
+    GenderVal=null,OTPProvider=null,OTP_API=null,OTP_Region_Code=null) => {
+    // console.log("Generating Browser");
     // var Chrome = Chrome_Ubuntu;
     // var Chrome = Chrome_Windows;
-    if(OTPProvider!=null && OTP_API== null)
+    if(OTPProvider!=null && OTP_API== null && OTP_Region_Code==null)
     {
         console.log("OTP API is NULL");
         return false;
@@ -93,7 +93,6 @@ exports.Browser = async (Module,Chrome,Try,proxyUrl=null,proxyUser=null,proxyPas
                   // '--ignore-certificate-errors-spki-list',
                   // '--disable-dev-shm-usage',
                   // '--disable-infobars',
-                  
                   '--lang=en-US,en',
                   '--window-size=1280x720',
                   // '--disable-extensions',
@@ -117,32 +116,36 @@ exports.Browser = async (Module,Chrome,Try,proxyUrl=null,proxyUser=null,proxyPas
             console.log("Reuse Old Browser");
             page= (await browser.pages())[0]
           }
+          await page.setDefaultNavigationTimeout(120000);
           cursor = createCursor(page);
-
             // task
             var task ;
             if(Module == "Create Account")
             {
-                task = await Create(page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayVal,GenderVal,OTPProvider,OTP_API);
+              task = await Create(page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayVal,GenderVal,OTPProvider,OTP_API,OTP_Region_Code);
             }else if(Module == "Reverify_Phone")
             {
                 task = "Reverify Phone Number";
                 if(await task.status == true)
                 {
-                    browser.close();
-                    return {
-                        Email : await task.Email,
-                        Pass : await task.Pass
-                    }
+                  browser.close();
+                  return {
+                      Email : await task.Email,
+                      Pass : await task.Pass
+                  }
                 }else if(await task.status == "TimeoutError"){
+                  console.log("Closing browser");
+                  browser.close();
                     //replay
                 }
             }
         }
         }catch(err)
         {
-            console.error("Browser Error Log : "+err);
-            process.exit();
+          console.error("Browser Error Log : "+err);
+          console.log("Closing browser");
+          browser.close();
+          process.exit();
         }
     }
 }

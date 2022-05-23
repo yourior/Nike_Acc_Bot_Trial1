@@ -6,6 +6,7 @@ var emailVal = 'TesterEmail' + '.' + (Math.floor((Math.random() * 9000) + 1000))
 var smsEmail = 'ENTER GETSMSCODE.COM EMAIL ADDRESS';
 var token = 'ENTER GETSMSCODE API TOKEN';
 var OTP_API = '88862e0e304d3e6dce193d1771ffb5A5';
+var OTP_Region_Code = '10';
 var passwordVal = 'Alkaline@tester123';
 var fNameVal = 'BAKAYAROU';
 var sNameVal = 'BAKA';
@@ -35,9 +36,10 @@ var Chrome_Windows = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe
     //////
     // var SMS_Activate_Balance = (await (await SMS_Activate.GetBalance(OTP_API)).data).replace('ACCESS_BALANCE:', '');
     var SMS_Activate_Balance = (await (await SMS_Activate.GetBalance(OTP_API)).data);
-    var SMS_Activate_Phone_Count = await (await SMS_Activate.CountNikePhoneNumber(OTP_API,10)).data;
+    var SMS_Activate_Phone_Count = await (await SMS_Activate.CountNikePhoneNumber(OTP_API,OTP_Region_Code)).data;
     console.log("SMS-Activate Balance : "+SMS_Activate_Balance);
-    console.log("SMS-Activate Nike Vietnam Phone Count : "+SMS_Activate_Phone_Count);
+    console.log("SMS-Activate Nike Vietnam Phone Count : "+SMS_Activate_Phone_Count.count+" - Cost : "+SMS_Activate_Phone_Count.cost);
+    console.log("Can Create "+Math.floor(SMS_Activate_Balance/SMS_Activate_Phone_Count.cost)+' Account');
     console.log("Email : "+emailVal+"\nfname : "+fNameVal+"\nsname : "+sNameVal);
 
     if(SMS_Activate_Phone_Count==0)
@@ -46,8 +48,8 @@ var Chrome_Windows = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe
     }else{
 
       // console.log("SMS-Activate Balance + Cashback : "+await SMS_Activate.GetBalanceAndCashBack());
-      // await Browser.Browser("Create Account",Chrome_Windows,5,proxyUrl,proxyUser,proxyPass,emailVal,passwordVal,fNameVal,sNameVal,bDayVal,
-      //     GenderVal,OTPProvider='SMS-Activate',OTP_API);
+      await Browser.Browser("Create Account",Chrome_Windows,5,proxyUrl,proxyUser,proxyPass,emailVal,passwordVal,fNameVal,sNameVal,bDayVal,
+          GenderVal,OTPProvider='SMS-Activate',OTP_API,OTP_Region_Code);
     }
         
 })();

@@ -9,6 +9,7 @@ const AdblockerPlugin = require('puppeteer-extra-plugin-adblocker')
 puppeteer.use(AdblockerPlugin({ blockTrackers: true }))
 
 const {installMouseHelper} = require('./mouse-view');
+const SMS = require('./SMS_Activate');
 
 // var emailVal = 'TesterEmail' + '.' + (Math.floor((Math.random() * 9000) + 1000)).toString() + '@nguyenluck.com';
 // var smsEmail = 'ENTER GETSMSCODE.COM EMAIL ADDRESS';
@@ -41,11 +42,11 @@ const ProfileClick = '#gen-nav-commerce-header-v2 > div.pre-l-header-container >
 const ProfileClick_step2 ='#gen-nav-commerce-header-v2 > div.pre-l-header-container > header > div > div.pre-l-wrapper.mauto-sm.d-sm-flx > div.pre-l-nav-box.flx-gro-sm-1 > nav > div.pre-mobilemenu.d-sm-ib.d-lg-h.z2.pre-show > div.pre-panel.pre-my-account-panel > a:nth-child(8)';
 const ProfileClick_step3 = '#settings > div.css-5d5ho6 > div.ncss-headline-lg-brand.ncss-col-sm-12.ncss-col-lg-4.pb8-sm.pr6-lg.pl0-sm.va-sm-t.css-bdqskz > div:nth-child(1) > div';
 const AddNumber = '#modal-root > div > div > div > div:nth-child(2) > div > form > div.account-form > div.mex-mobile-input-wrapper.ncss-col-sm-12.ncss-col-md-12.pl0-sm.pr0-sm.pb3-sm > div > div > div > div.ncss-col-sm-6.ta-sm-r.va-sm-m.flx-jc-sm-fe.d-sm-iflx > button';
-const FillNumber = '#e079ab86-520f-4e6f-8165-1d7cf7eb154e';
-const Send_OTPButton = '#bc48f9f3-c784-48c1-9397-18fb4504bbd5';
+const FillNumber = '#\\34 6d904c5-26fb-4cff-8de3-8a6642de060c';
+const Send_OTPButton = '#\\39 1782026-e9af-47cc-9868-119a10f7cbcb';
 const OTPFill = '#\\38 11824e8-cb24-482c-a1d7-f93de0355b02';
 const AgreeButtonOTP = '#progressiveMobile > label';
-const OTPContinue = '#ef18c42e-3b75-4fb4-ab6c-ace57ef4e449';
+const OTPContinue = '#\\37 a4b14c5-66fd-4af4-863d-a71181f2c81d';
 //GET DOM TRAVERSAL VALUES
 const AcceptCookies = '#cookie-settings-layout > div > div > div > div.ncss-row.mt5-sm.mb7-sm > div:nth-child(2) > button';
 const loginBtn = 'li.member-nav-item.d-sm-ib.va-sm-m > button';
@@ -135,7 +136,7 @@ async function ReuseCookies(page)
   await page.setCookie(...cookies);
 }
 // var page;
-exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayVal,GenderVal,OTPProvider='SMS-Activate',OTP_API) => {
+exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayVal,GenderVal,OTPProvider='SMS-Activate',OTP_API,OTP_Region_Code) => {
   console.log("The Bot is starting...");
   try{
       cursor = createCursor(page);
@@ -146,7 +147,7 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
 
       await installMouseHelper(page);//VIEW MOUSE
       // await page.goto('https://www.nike.com/vn/launch',{waitUntil: 'networkidle2'});
-      await page.goto(NikeWeb,{waitUntil: 'networkidle2'});
+      await page.goto(NikeWeb,{waitUntil: 'networkidle0'});
         // await page.setViewport({ width: 1280, height: 720 });
 
         //Get Region Picker
@@ -264,7 +265,8 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         await cursor.click(submit);
         // await page.click(submit);
         console.log("submitted");
-  
+        await page.waitForNavigation({ waitUntil: 'networkidle0' });
+
         console.log("email : "+emailVal+" - pass : "+passwordVal);
         await delay(5000);
         //COOKIE
@@ -292,11 +294,14 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         await page.waitForSelector(ProfileClick_step2,{visible: true, hidden: false});
         await cursor.move(ProfileClick_step2);
         await cursor.click();
+        await page.waitForNavigation({ waitUntil: 'networkidle0' });
+
         console.log("Go to Profile Section, Looking for Account Setting Button");
         await page.waitForSelector(ProfileClick_step3,{visible: true, hidden: false});
         await cursor.move(ProfileClick_step3);
         await cursor.click();
         console.log("Account Setting Found");
+        await page.waitForNavigation({ waitUntil: 'networkidle0' });
 
         console.log("Looking for Add Phone Number Button");
         await page.waitForSelector(AddNumber,{visible: true, hidden: false});
@@ -304,15 +309,45 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         await cursor.click();
         console.log("Add Phone Number Button Found");
         //
+
         console.log("Looking for Phone Number Text Box");
         await page.waitForSelector(FillNumber);
         await cursor.move(AddNumber);
         await cursor.click();
         console.log("Phone Number Text Box Found");
         console.log("Asking for Phone Number");
+
         /////SMS-Activate;
         var phoneSMS_Activate ;
+        if(OTPProvider == 'SMS-Activate')
+        {
+          //SMS-Activate
+          console.log("Still Waiting for OTP");
+          var status = false,attempt=0,Chance=5;
+          while(!status && Chance>attempt)
+          {
+            phoneSMS_Activate = await SMS.GetNikeNumber(OTP_API,OTP_Region_Code);
+            if(await phoneSMS_Activate.status == true)
+            {
+              status= true;
+            }else{
+              await delay(60000);
+            }
+          }
+          if(await phoneSMS_Activate.status == false)
+          {
+            console.log("Phone Verification Problem");
+            return {
+              status : false
+            }
+          }
+          console.log("OTP is given");
+          //
+        }
         //
+        Rando_Delay = Math.floor(Math.random() * 100) + 50;
+        await page.type(AddNumber, phoneSMS_Activate.phone, { delay: Rando_Delay });
+
         console.log("Phone Number is Given");
         console.log("Filling Phone Number");
         Rando_Delay = Math.floor(Math.random() * 100) + 50;
@@ -326,17 +361,37 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         console.log("Waiting For OTP");
         console.log("While Waiting For OTP, System is Looking for OTP TextBox");
         await page.waitForSelector(OTPFill);
+        console.log("OTP TextBox Found");
         await cursor.move(OTPFill);
         await cursor.click();
-        console.log("OTP TextBox Found");
-        if(OTPProvider == 'OTPProvider')
+        var OTP;
+        if(OTPProvider == 'SMS-Activate')
         {
           //SMS-Activate
           console.log("Still Waiting for OTP");
-
+          
+          var status = false,attempt=0,Chance=5;
+          while(!status && Chance>attempt)
+          {
+            OTP = await SMS.GetNikeOTP(OTP_API, await phoneSMS_Activate.id);
+            if(await OTP.status == true)
+            {
+              status= true;
+            }else{
+              await delay(60000);
+            }
+          }
+          if(await OTP.status == false)
+          {
+            console.log("OTP Verification Problem");
+            return {
+              status : false
+            }
+          }
           console.log("OTP is given");
           //
         }
+        
         console.log("Looking for Agree Button");
         await page.waitForSelector(AgreeButtonOTP);
         await cursor.move(AgreeButtonOTP);
