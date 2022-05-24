@@ -8,13 +8,14 @@ var token = 'ENTER GETSMSCODE API TOKEN';
 var OTP_API = '88862e0e304d3e6dce193d1771ffb5A5';
 var OTP_Region_Code = '10';
 var passwordVal = 'Alkaline@tester123';
-var fNameVal = 'BAKAYAROU';
-var sNameVal = 'BAKA';
+var fNameVal ;
+var sNameVal ;
 var bDayVal = '01/05/19'+(Math.floor((Math.random() * (99-55)) + 55)).toString(); //Replace with your birthday if you wish.
 var proxyUrl = null; //if proxy exists enter it in format IP:PORT, if not leave blank
 var proxyUser = null; //If proxy username/pass exists insert it here if not leave both variables blank
 var proxyPass = null;
 var GenderVal = 'm';
+var BrowserTimeOut = 120000;
 var info;
 var themessage;
 var phoneNum;
@@ -33,6 +34,9 @@ var Chrome_Windows = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe
     sNameVal =  nameGenerate.dictionaries[0][Math.floor(Math.random() * nameGenerate.dictionaries[0].length)];
 
     emailVal = fNameVal+sNameVal+'.'+(Math.floor((Math.random() * 9000) + 1000)).toString()+EmailDomain;
+
+    /// Need Bday generator
+
     //////
     // var SMS_Activate_Balance = (await (await SMS_Activate.GetBalance(OTP_API)).data).replace('ACCESS_BALANCE:', '');
     var SMS_Activate_Balance = (await (await SMS_Activate.GetBalance(OTP_API)).data);
@@ -48,7 +52,7 @@ var Chrome_Windows = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe
     }else{
 
       // console.log("SMS-Activate Balance + Cashback : "+await SMS_Activate.GetBalanceAndCashBack());
-      await Browser.Browser("Create Account",Chrome_Windows,5,proxyUrl,proxyUser,proxyPass,emailVal,passwordVal,fNameVal,sNameVal,bDayVal,
+      await Browser.Browser(0,"Create Account",Chrome_Windows,BrowserTimeOut,5,proxyUrl,proxyUser,proxyPass,emailVal,passwordVal,fNameVal,sNameVal,bDayVal,
           GenderVal,OTPProvider='SMS-Activate',OTP_API,OTP_Region_Code);
     }
         

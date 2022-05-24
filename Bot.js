@@ -160,7 +160,7 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         // HUMAN INTERACTION TIMELINE
         const WaitTime = 10;
         var WaitCount=0;
-        console.log("Need Human Interaction... for 10 sec");
+        console.log("Optional Human Interaction... for 10 sec");
         while(WaitCount<WaitTime)
         {
           console.log("Counting.... "+WaitCount);
@@ -191,18 +191,21 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         await cursor.move(DashBoard_SignUp_NONFULL);
         await cursor.click();
         console.log("Register Button (1) Clicked");
-        // await page.waitForNavigation({waitUntil: 'networkidle0'});
-        // await page.waitForNavigation();
-        // await delay(5000);
+
+        console.log("Join us Layout is Loading");
+        await page.waitForNavigation({waitUntil: 'networkidle0'});
+        console.log("Join us Layout is Loaded");
+
         console.log("Looking for register Button (2)");
         await page.waitForSelector(Dashboard_Signup_2);
         await cursor.move(Dashboard_Signup_2);
         await cursor.click();
         console.log("Register Button (2) Clicked");
+
+        console.log("Register Page is Loading");
         await page.waitForNavigation({ waitUntil: 'networkidle0' });
-        // await page.waitForNavigation();
-    
-        // await page.waitForTimeout(2000);
+        console.log("Register Page is Loaded");
+
         console.log("Looking for Email TextBox");
         await page.waitForSelector(email,{visible: true, hidden: false});
         console.log("email: " + emailVal);
@@ -242,11 +245,6 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         console.log("Looking for Region Dropdown");
         // await page.waitForSelector(Region_Signup);
         console.log("Region Dropdown Skip FOR NOW");
-        // // await cursor.click(Region_Signup);
-        // Rando_Delay = Math.floor(Math.random() * 100) + 50;
-        // await page.select(Region_Signup, RegionVal, { delay: Rando_Delay });
-        // // await page.type(Region_Signup, RegionVal, { delay: Rando_Delay });
-        // console.log("entered Region");
   
         console.log("Looking for Gender Button");
         if(GenderVal=='m')
@@ -263,26 +261,27 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         console.log("Looking for Submit Button");
         await page.waitForSelector(submit,{visible: true, hidden: false});
         await cursor.click(submit);
-        // await page.click(submit);
+
         console.log("submitted");
         await page.waitForNavigation({ waitUntil: 'networkidle0' });
 
         console.log("email : "+emailVal+" - pass : "+passwordVal);
-        await delay(5000);
+
         //COOKIE
-  
         console.log("Waiting for Cookies...");
         const cookies = await page.cookies();
-        // console.log("Reuse Cookies...");
-        // ReuseCookies(page);
         console.log("Accepted Cookies...");
         console.log("Saving Cookies...");
         await fs.writeFile('./cookiesSignIn.json', JSON.stringify(cookies, null, 2));
         console.log("Cookies Saved...");
-        // await page.waitForTimeout(1000);
-        // await delay(5000);
-        
         /////////////////////////////////
+
+        //RELOAD MAIN MENU
+        console.log("Main Menu is Loading");
+        await page.waitForNavigation({ waitUntil: 'networkidle0' });
+        console.log("Main Menu is Loaded");
+        //
+        
         // GO TO PROFILE
         console.log("Going to Profile");
         await page.waitForSelector(Menu_Option_NONFULL,{visible: true, hidden: false});
@@ -294,14 +293,20 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         await page.waitForSelector(ProfileClick_step2,{visible: true, hidden: false});
         await cursor.move(ProfileClick_step2);
         await cursor.click();
+
+        console.log("Profile Section is Loading");
         await page.waitForNavigation({ waitUntil: 'networkidle0' });
+        console.log("Profile Section is Loaded");
 
         console.log("Go to Profile Section, Looking for Account Setting Button");
         await page.waitForSelector(ProfileClick_step3,{visible: true, hidden: false});
         await cursor.move(ProfileClick_step3);
         await cursor.click();
         console.log("Account Setting Found");
+
+        console.log("Account Setting is Loading");
         await page.waitForNavigation({ waitUntil: 'networkidle0' });
+        console.log("Account Setting is Loaded");
 
         console.log("Looking for Add Phone Number Button");
         await page.waitForSelector(AddNumber,{visible: true, hidden: false});
@@ -336,7 +341,7 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
           }
           if(await phoneSMS_Activate.status == false)
           {
-            console.log("Phone Verification Problem");
+            console.log("Phone Provider Problem");
             return {
               status : false
             }
@@ -364,6 +369,7 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         console.log("OTP TextBox Found");
         await cursor.move(OTPFill);
         await cursor.click();
+
         var OTP;
         if(OTPProvider == 'SMS-Activate')
         {
@@ -433,6 +439,19 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         }
     }catch(err)
     {
+      const [jsCoverage, cssCoverage] = await Promise.all([
+        page.coverage.stopJSCoverage(),
+        page.coverage.stopCSSCoverage(),
+      ]);
+      let totalBytes = 0;
+      let usedBytes = 0;
+      const coverage = [...jsCoverage, ...cssCoverage];
+      for (const entry of coverage) {
+        totalBytes += entry.text.length;
+        for (const range of entry.ranges) usedBytes += range.end - range.start - 1;
+      }
+      console.log(`Until Error - Bytes used: ${(usedBytes / totalBytes) * 100}%`);
+
       console.error("Create Account Error Log : "+err);
       var statsReturn;
       if(err.toString().includes("TimeoutError"))
@@ -441,7 +460,8 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         statsReturn = "TimeoutError";
       }
       return {
-        status : statsReturn
+        status : false,
+        data : statsReturn
       }
     }     
 };

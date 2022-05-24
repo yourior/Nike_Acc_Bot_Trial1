@@ -7,7 +7,7 @@ const AdblockerPlugin = require('puppeteer-extra-plugin-adblocker')
 puppeteer.use(AdblockerPlugin({ blockTrackers: true }))
 
 const {Create }= require('./Bot');
-exports.Browser = async (Module,Chrome,Try,proxyUrl=null,proxyUser=null,proxyPass=null,emailVal,passwordVal,fNameVal=null,sNameVal=null,bDayVal=null,
+exports.Browser = async (count,Module,Chrome,BrowserTimeOut=120000,Try,proxyUrl=null,proxyUser=null,proxyPass=null,emailVal,passwordVal,fNameVal=null,sNameVal=null,bDayVal=null,
     GenderVal=null,OTPProvider=null,OTP_API=null,OTP_Region_Code=null) => {
     // console.log("Generating Browser");
     // var Chrome = Chrome_Ubuntu;
@@ -23,7 +23,8 @@ exports.Browser = async (Module,Chrome,Try,proxyUrl=null,proxyUser=null,proxyPas
     attempt=0;
     while(Try>attempt)
     {
-      try {
+      var browser;
+      
         attempt++;
         isSuccess=false;
         // var page;
@@ -59,13 +60,13 @@ exports.Browser = async (Module,Chrome,Try,proxyUrl=null,proxyUser=null,proxyPas
               // devtools: true
             });
           
-          if((await browser.pages())[0] == null)
+          if((await browser.pages())[count] == null)
           {
             console.log("Generating Browser");
             page = await browser.newPage();
           }else{
             console.log("Reuse Old Browser");
-            page= (await browser.pages())[0]
+            page= (await browser.pages())[count]
           }
           cursor = createCursor(page);
   
@@ -108,38 +109,57 @@ exports.Browser = async (Module,Chrome,Try,proxyUrl=null,proxyUser=null,proxyPas
                 // slowMo: 150,
             });
           // page = await browser.newPage();
-          if((await browser.pages())[0] == null)
+          if((await browser.pages())[count] == null)
           {
             console.log("Generating Browser");
             page = await browser.newPage();
           }else{
             console.log("Reuse Old Browser");
-            page= (await browser.pages())[0]
+            page= (await browser.pages())[count]
           }
-          await page.setDefaultNavigationTimeout(120000);
+        }
+        try {
+
+          await page.setDefaultNavigationTimeout(BrowserTimeOut);
           cursor = createCursor(page);
-            // task
-            var task ;
-            if(Module == "Create Account")
-            {
-              task = await Create(page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayVal,GenderVal,OTPProvider,OTP_API,OTP_Region_Code);
-            }else if(Module == "Reverify_Phone")
-            {
-                task = "Reverify Phone Number";
-                if(await task.status == true)
+          // task
+          var task ;
+          if(Module == "Create Account")
+          {
+            task = await Create(page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayVal,GenderVal,OTPProvider,OTP_API,OTP_Region_Code);
+            if(await task.status == true)
+              {
+                browser.close();
+                return {
+                    Email : await task.Email,
+                    Pass : await task.Pass
+                }
+              }else if(await task.status == false){
+                if(await task.data == "TimeoutError")
                 {
-                  browser.close();
-                  return {
-                      Email : await task.Email,
-                      Pass : await task.Pass
-                  }
-                }else if(await task.status == "TimeoutError"){
                   console.log("Closing browser");
                   browser.close();
                     //replay
                 }
-            }
-        }
+              }
+          }else if(Module == "Reverify_Phone")
+          {
+              task = "Reverify Phone Number";
+              // if(await task.status == true)
+              // {
+              //   browser.close();
+              //   return {
+              //       Email : await task.Email,
+              //       Pass : await task.Pass
+              //   }
+              // }else if(await task.status == false){
+              //   if(await task.data == "TimeoutError")
+              //   {
+              //     console.log("Closing browser");
+              //     browser.close();
+              //       //replay
+              //   }
+              }
         }catch(err)
         {
           console.error("Browser Error Log : "+err);
