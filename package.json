@@ -12,6 +12,7 @@
   "dependencies": {
     "axios": "^0.27.1",
     "dates-generator": "^1.0.4",
+    "discord-webhook-node": "^1.1.8",
     "ghost-cursor": "^1.1.10",
     "puppeteer-core": "^14.1.0",
     "puppeteer-extra": "^3.2.3",

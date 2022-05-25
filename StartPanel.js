@@ -1,8 +1,9 @@
-const Browser = require('./BrowserProcess');
-const BDate_Gen = require('dates-generator');
-// const nameGenerator = require('unique-names-generator');
-const ProfileGenerator = require('random-profile-generator');
-const SMS_Activate = require('./SMS_Activate');
+var Browser = require('./BrowserProcess');
+var Discord = require('./DiscordAPI');
+var BDate_Gen = require('dates-generator');
+// var nameGenerator = require('unique-names-generator');
+var ProfileGenerator = require('random-profile-generator');
+var SMS_Activate = require('./SMS_Activate');
 var EmailDomain = '@gmail.com';
 var emailVal = 'TesterEmail' + '.' + (Math.floor((Math.random() * 9000) + 1000)).toString() + '@gmail.com';
 var smsEmail = 'ENTER GETSMSCODE.COM EMAIL ADDRESS';
@@ -27,13 +28,15 @@ var RegionVal='Vietnam';
 var NikeWeb = 'https://www.nike.com/';
 var Chrome_Ubuntu = '/usr/bin/google-chrome';
 var Chrome_Windows = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
+var DiscordWebhook_Link = 'https://discord.com/api/webhooks/952973421443153960/_Vl9DMoaUo51C4zPRzyHMx-IKW17VIcGrVSt4CATnS7rEuv9Idp7Q9KTK_T_hgZK-pEX';
 (async() =>
 {
-  const presentDay = new Date();
+  Discord.registerDiscordWebhook(DiscordWebhook_Link);
+  var presentDay = new Date();
   // console.log();
-  const year = Math.floor((Math.random()*(presentDay.getFullYear() - 16 - (presentDay.getFullYear()-80 ))) + (presentDay.getFullYear()-80 ));
-  const month = Math.floor((Math.random() * 12 )+ 1);
-  const day = Math.floor((Math.random() * BDate_Gen.daysInMonth( year,  month) )+ 1);
+  var year = Math.floor((Math.random()*(presentDay.getFullYear() - 16 - (presentDay.getFullYear()-80 ))) + (presentDay.getFullYear()-80 ));
+  var month = Math.floor((Math.random() * 12 )+ 1);
+  var day = Math.floor((Math.random() * BDate_Gen.daysInMonth( year,  month) )+ 1);
   bDayVal = month+'/'+day+"/"+year;
   
   // var nameGenerate= (nameGenerator.Config = {
@@ -80,10 +83,15 @@ var Chrome_Windows = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe
     {
       console.log("not enough phone number on the region");
     }else{
-
+      // var Phone = await SMS_Activate.GetNikeNumber(OTP_API, OTP_Region_Code)
+      //   console.log(JSON.stringify(Phone))
       // console.log("SMS-Activate Balance + Cashback : "+await SMS_Activate.GetBalanceAndCashBack());
-      await Browser.Browser(0,"Create Account",Chrome_Windows,BrowserTimeOut,5,proxyUrl,proxyUser,proxyPass,emailVal,passwordVal,fNameVal,sNameVal,bDayVal,
+      var create = await Browser.Browser(0,"Create Account",Chrome_Windows,BrowserTimeOut,5,proxyUrl,proxyUser,proxyPass,emailVal,passwordVal,fNameVal,sNameVal,bDayVal,
           GenderVal,OTPProvider='SMS-Activate',OTP_API,OTP_Region_Code);
-    }
-        
+      if(create.status == true)
+      {
+        Discord.DiscordWebhook(await create.Proxy,await create.Email,await create.Pass,await create.Region,await create.Phone);
+      }
+      
+      }
 })();

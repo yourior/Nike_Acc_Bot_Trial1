@@ -1,7 +1,7 @@
 var axios = require('axios');
 exports.GetBalance = async(api_key) =>
 {
-    // const host = "https://api.sms-activate.org/stubs/handler_api.php";
+    // var host = "https://api.sms-activate.org/stubs/handler_api.php";
     return await axios(
         {
             url:'https://api.sms-activate.org/stubs/handler_api.php?api_key='+api_key+'&action=getBalance',
@@ -55,7 +55,7 @@ exports.GetBalance = async(api_key) =>
 }
 exports.GetBalanceAndCashBack = async(api_key) =>
 {
-    // const host = "https://api.sms-activate.org/stubs/handler_api.php";
+    // var host = "https://api.sms-activate.org/stubs/handler_api.php";
     return await axios(
         {
             url:'https://api.sms-activate.org/stubs/handler_api.php?api_key='+api_key+'&action=getBalanceAndCashBack',
@@ -146,21 +146,35 @@ exports.GetNikeNumber = async(api_key,country_code) =>
         headers: { }
       };
       
-      axios(config)
+      return await axios(config)
       .then(async function (response) {
-        var data = (await response.data);
-        if(data.includes("ACCESS_NUMBER"))
+        var data = (JSON.stringify(await response.data));
+        // console.log(data));
+        if(await data.includes("ACCESS_NUMBER"))
         {
+            console.log(await data);
             var array = data.split(':');
-            for(var i; i<data.length;i++)
+            console.log(await array.length);
+            for(var i=0; i<array.length;i++)
             {
                 array[i] = array[i].replace('"','');
+                console.log(array[i]);
+            }
+            var phone = Array.from(array[2]);
+            // var initial = '+84';
+            // // phone[0] = initial;
+            var final_phone = "";
+            for(var i=2;i<phone.length;i++)//vn
+            {
+                console.log("process "+i+" result : "+final_phone);
+                final_phone = final_phone.concat(phone[i]);
             }
             return {
                 status : true,
                 data : {
                     id : array[1],
-                    phone : array[2]
+                    phone : await final_phone,
+                    original_phone : array[2]
                 }
             }
         }else if(data == "NO_NUMBERS")
@@ -201,12 +215,13 @@ exports.GetNikeOTP = async(api_key,id)=>
 
     return await axios(config)
     .then(async function (response) {
-        // console.log(JSON.stringify(response.data));
+        console.log(JSON.stringify(response.data));
         var data = await response.data;
-        if(data.includes("ACCESS_NUMBER"))
+        console.log(data);
+        if(data.includes("STATUS_OK"))
         {
             var array = data.split(':');
-            for(var i; i<data.length;i++)
+            for(var i; i<array.length;i++)
             {
                 array[i] = array[i].replace('"','');
             }
@@ -217,15 +232,16 @@ exports.GetNikeOTP = async(api_key,id)=>
             }
         }else if(data.includes("STATUS_WAIT_CODE"))
         {
-            console.log("Waiting for Code");
             return{
                 status : false,
+                data : data
             }
         }else if(data.includes("STATUS_WAIT_RETRY"))
         {
             console.log("Retrying Code");
             return{
                 status : false,
+                data : data
             }
         }
     })

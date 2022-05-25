@@ -117,6 +117,7 @@ exports.Browser = async (count,Module,Chrome,BrowserTimeOut=120000,Try,proxyUrl=
             console.log("Reuse Old Browser");
             page= (await browser.pages())[count]
           }
+          proxyUrl = "LocalHost"
         }
         try {
 
@@ -131,8 +132,12 @@ exports.Browser = async (count,Module,Chrome,BrowserTimeOut=120000,Try,proxyUrl=
               {
                 browser.close();
                 return {
-                    Email : await task.Email,
-                    Pass : await task.Pass
+                  status : true,
+                  Email : await task.Email,
+                  Pass : await task.Pass,
+                  Region : await task.Region,
+                  Phone : await task.Phone,
+                  Proxy : await proxyUrl
                 }
               }else if(await task.status == false){
                 if(await task.data == "TimeoutError")

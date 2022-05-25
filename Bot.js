@@ -1,16 +1,16 @@
-const puppeteer = require('puppeteer-extra');
-// const {TimeoutError} = require('puppeteer/Errors');
-// const SMSActivate = require('sms-activate');
-const { createCursor } = require ("ghost-cursor");
-const StealthPlugin = require('puppeteer-extra-plugin-stealth');
-// const request = require('request');
-const fs = require('fs').promises;
+var puppeteer = require('puppeteer-extra');
+// var {TimeoutError} = require('puppeteer/Errors');
+// var SMSActivate = require('sms-activate');
+var { createCursor } = require ("ghost-cursor");
+var StealthPlugin = require('puppeteer-extra-plugin-stealth');
+// var request = require('request');
+var fs = require('fs').promises;
 puppeteer.use(StealthPlugin());
-const AdblockerPlugin = require('puppeteer-extra-plugin-adblocker')
+var AdblockerPlugin = require('puppeteer-extra-plugin-adblocker')
 puppeteer.use(AdblockerPlugin({ blockTrackers: true }))
 
-const {installMouseHelper} = require('./mouse-view');
-const SMS = require('./SMS_Activate');
+var {installMouseHelper} = require('./mouse-view');
+var SMS = require('./SMS_Activate');
 
 // var emailVal = 'TesterEmail' + '.' + (Math.floor((Math.random() * 9000) + 1000)).toString() + '@nguyenluck.com';
 // var smsEmail = 'ENTER GETSMSCODE.COM EMAIL ADDRESS';
@@ -31,48 +31,48 @@ var NikeWeb = 'https://www.nike.com/';
 // var Chrome_Ubuntu = '/usr/bin/google-chrome';
 // var Chrome_Windows = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 // From Main DashBoard
-const Menu_Option_NONFULL = '#MobileMenuButton';
-const DashBoard_SignUp_NONFULL = '#hf_title_joinus_membership';
-const Dashboard_Signup_1 = '#gen-nav-commerce-header-v2 > div.pre-l-header-container > div.pre-l-brand-header.d-sm-h.d-lg-b.z3 > div > div > div:nth-child(3) > div > a';
-const Dashboard_Signup_2 = '#\\39 a519619-fe20-4cc4-943f-3c70a8e36fe1 > div > div > div.YEqpdVMc.cta-container.hasText > a';
-const Region_Signup = '#\\34 192d36c-1096-47c7-8637-dd56783efd1b';
-const Email_Signup = '#f0735cfc-e551-49c2-8fb3-436310735e57';
-const Dasboard_RegionPicker = '#gen-nav-footer > footer > div > div.l-sub-footer.ncss-row > div.ncss-col-sm-12.ncss-col-md-6.pt3-sm.pl5-sm.pl2-md > div > a';
-const Dashboard_RegionPicker_VN = '#gen-nav-footer > nav > div > div > div:nth-child(3) > div > a:nth-child(16)';
-const ProfileClick = '#gen-nav-commerce-header-v2 > div.pre-l-header-container > header > div > div.pre-l-wrapper.mauto-sm.d-sm-flx > div.pre-l-nav-box.flx-gro-sm-1 > nav > div.pre-mobilemenu.d-sm-ib.d-lg-h.z2.pre-show > div.pre-panel.pre-panel-root > button.nav-btn.p0-sm.pre-link.pre-account-link > div > div';
-const ProfileClick_step2 ='#gen-nav-commerce-header-v2 > div.pre-l-header-container > header > div > div.pre-l-wrapper.mauto-sm.d-sm-flx > div.pre-l-nav-box.flx-gro-sm-1 > nav > div.pre-mobilemenu.d-sm-ib.d-lg-h.z2.pre-show > div.pre-panel.pre-my-account-panel > a:nth-child(8)';
-const ProfileClick_step3 = '#settings > div.css-5d5ho6 > div.ncss-headline-lg-brand.ncss-col-sm-12.ncss-col-lg-4.pb8-sm.pr6-lg.pl0-sm.va-sm-t.css-bdqskz > div:nth-child(1) > div';
-const AddNumber = '#modal-root > div > div > div > div:nth-child(2) > div > form > div.account-form > div.mex-mobile-input-wrapper.ncss-col-sm-12.ncss-col-md-12.pl0-sm.pr0-sm.pb3-sm > div > div > div > div.ncss-col-sm-6.ta-sm-r.va-sm-m.flx-jc-sm-fe.d-sm-iflx > button';
-const FillNumber = '#\\34 6d904c5-26fb-4cff-8de3-8a6642de060c';
-const Send_OTPButton = '#\\39 1782026-e9af-47cc-9868-119a10f7cbcb';
-const OTPFill = '#\\38 11824e8-cb24-482c-a1d7-f93de0355b02';
-const AgreeButtonOTP = '#progressiveMobile > label';
-const OTPContinue = '#\\37 a4b14c5-66fd-4af4-863d-a71181f2c81d';
+var Menu_Option_NONFULL = '#MobileMenuButton';
+var DashBoard_SignUp_NONFULL = '#hf_title_joinus_membership';
+var Dashboard_Signup_1 = '#gen-nav-commerce-header-v2 > div.pre-l-header-container > div.pre-l-brand-header.d-sm-h.d-lg-b.z3 > div > div > div:nth-child(3) > div > a';
+var Dashboard_Signup_2 = '#\\39 a519619-fe20-4cc4-943f-3c70a8e36fe1 > div > div > div.YEqpdVMc.cta-container.hasText > a';
+var Region_Signup = '#\\34 192d36c-1096-47c7-8637-dd56783efd1b';
+var Email_Signup = '#f0735cfc-e551-49c2-8fb3-436310735e57';
+var Dasboard_RegionPicker = '#gen-nav-footer > footer > div > div.l-sub-footer.ncss-row > div.ncss-col-sm-12.ncss-col-md-6.pt3-sm.pl5-sm.pl2-md > div > a';
+var Dashboard_RegionPicker_VN = '#gen-nav-footer > nav > div > div > div:nth-child(3) > div > a:nth-child(16)';
+var ProfileClick = '#gen-nav-commerce-header-v2 > div.pre-l-header-container > header > div > div.pre-l-wrapper.mauto-sm.d-sm-flx > div.pre-l-nav-box.flx-gro-sm-1 > nav > div.pre-mobilemenu.d-sm-ib.d-lg-h.z2.pre-show > div.pre-panel.pre-panel-root > button.nav-btn.p0-sm.pre-link.pre-account-link > div > div';
+var ProfileClick_step2 ='#gen-nav-commerce-header-v2 > div.pre-l-header-container > header > div > div.pre-l-wrapper.mauto-sm.d-sm-flx > div.pre-l-nav-box.flx-gro-sm-1 > nav > div.pre-mobilemenu.d-sm-ib.d-lg-h.z2.pre-show > div.pre-panel.pre-my-account-panel > a:nth-child(8)';
+var ProfileClick_step3 = '#settings > div.css-5d5ho6 > div.ncss-headline-lg-brand.ncss-col-sm-12.ncss-col-lg-4.pb8-sm.pr6-lg.pl0-sm.va-sm-t.css-bdqskz > div:nth-child(1) > div';
+var AddNumber = '#modal-root > div > div > div > div:nth-child(2) > div > form > div.account-form > div.mex-mobile-input-wrapper.ncss-col-sm-12.ncss-col-md-12.pl0-sm.pr0-sm.pb3-sm > div > div > div > div.ncss-col-sm-6.ta-sm-r.va-sm-m.flx-jc-sm-fe.d-sm-iflx > button';
+var FillNumber = '#\\34 6d904c5-26fb-4cff-8de3-8a6642de060c';
+var Send_OTPButton = '#\\39 1782026-e9af-47cc-9868-119a10f7cbcb';
+var OTPFill = '#\\38 11824e8-cb24-482c-a1d7-f93de0355b02';
+var AgreeButtonOTP = '#progressiveMobile > label';
+var OTPContinue = '#\\37 a4b14c5-66fd-4af4-863d-a71181f2c81d';
 //
-const EmailDuplicate = '#deb378bc-824e-42b2-8470-3be499cfebd5';
-const EmailNotValid = '#bfcbd896-8086-496b-8c4f-601c3b3b2da9 > div.error';
-const PassNotValid = '#\\33 bc52eaf-24d9-4c97-8dc5-62c33ad80bcd > div.error';
-const FnameNotValid = '#\\36 1c884b4-161f-42c8-b975-42ee6c4dd910 > div.error';
-const SnameNotValid = '#a7aa3fd0-0dd0-4956-9e67-1d867ff43ed8 > div.error';
-const DOBNotValid = '#\\32 6e24c95-5462-4038-9c4c-c8168280ac68 > div.error';
-const GenderNotValid = '#\\30 eeb5b56-fecf-4d97-a2ee-158f7c3dce29 > div.error';
+var EmailDuplicate = '#deb378bc-824e-42b2-8470-3be499cfebd5';
+var EmailNotValid = '#bfcbd896-8086-496b-8c4f-601c3b3b2da9 > div.error';
+var PassNotValid = '#\\33 bc52eaf-24d9-4c97-8dc5-62c33ad80bcd > div.error';
+var FnameNotValid = '#\\36 1c884b4-161f-42c8-b975-42ee6c4dd910 > div.error';
+var SnameNotValid = '#a7aa3fd0-0dd0-4956-9e67-1d867ff43ed8 > div.error';
+var DOBNotValid = '#\\32 6e24c95-5462-4038-9c4c-c8168280ac68 > div.error';
+var GenderNotValid = '#\\30 eeb5b56-fecf-4d97-a2ee-158f7c3dce29 > div.error';
 //
 //GET DOM TRAVERSAL VALUES
-const AcceptCookies = '#cookie-settings-layout > div > div > div > div.ncss-row.mt5-sm.mb7-sm > div:nth-child(2) > button';
-const loginBtn = 'li.member-nav-item.d-sm-ib.va-sm-m > button';
-const registerBtn = '.loginJoinLink.current-member-signin > a';
-const email = 'input[type="email"]';
-const password = 'input[type="password"]';
-const fName = '.firstName.nike-unite-component.empty > input[type="text"]';
-const sName = '.lastName.nike-unite-component.empty > input[type="text"]';
-const dob = 'input[type="date"]';
-const gender_male = 'li:nth-child(1) > input[type="button"]';
-const gender_female = '#\\39 f257672-1e5e-47bd-8aa6-e8bab48284c9 > input[type=button]';
-const submit = '.joinSubmit.nike-unite-component > input[type="button"]';
-const phone = 'div.sendCode > div.mobileNumber-div > input';
-const sendNum = '#nike-unite-progressiveForm > div > div > input[type="button"]';
-const enterTheValue = 'input[type="number"]';
-const storedSubmit = '#nike-unite-progressiveForm > div > input[type="button"]';
+var AcceptCookies = '#cookie-settings-layout > div > div > div > div.ncss-row.mt5-sm.mb7-sm > div:nth-child(2) > button';
+var loginBtn = 'li.member-nav-item.d-sm-ib.va-sm-m > button';
+var registerBtn = '.loginJoinLink.current-member-signin > a';
+var email = 'input[type="email"]';
+var password = 'input[type="password"]';
+var fName = '.firstName.nike-unite-component.empty > input[type="text"]';
+var sName = '.lastName.nike-unite-component.empty > input[type="text"]';
+var dob = 'input[type="date"]';
+var gender_male = 'li:nth-child(1) > input[type="button"]';
+var gender_female = '#\\39 f257672-1e5e-47bd-8aa6-e8bab48284c9 > input[type=button]';
+var submit = '.joinSubmit.nike-unite-component > input[type="button"]';
+var phone = 'div.sendCode > div.mobileNumber-div > input';
+var sendNum = '#nike-unite-progressiveForm > div > div > input[type="button"]';
+var enterTheValue = 'input[type="number"]';
+var storedSubmit = '#nike-unite-progressiveForm > div > input[type="button"]';
 
 //Create Sleep function to use in Async/Await function
 function sleep(ms) {
@@ -106,7 +106,7 @@ var chromeFlags = [
 //         slowMo: 150,
 //     }).then(async browser=> {
 //     console.log('Running tests..')
-//     const page = await browser.newPage();
+//     var page = await browser.newPage();
 //     await page.goto('https://bot.sannysoft.com')
 //     await page.waitForTimeout(5000)
 //     await page.screenshot({ path: 'testresult.png', fullPage: true })
@@ -122,7 +122,7 @@ var chromeFlags = [
 // }
 
 //values for phone number request
-// const options = {
+// var options = {
 //     url: 'http://www.getsmscode.com/vndo.php?action=getmobile&username='+smsEmail+'&token='+token+'&cocode=uk&pid=462',
 //     headers: {'User-Agent': 'request'}
 // };
@@ -141,8 +141,8 @@ function delay(time) {
 }
 async function ReuseCookies(page)
 {
-  const cookiesString = await fs.readFile('./diaoCookies_edited.json');
-  const cookies = JSON.parse(cookiesString);
+  var cookiesString = await fs.readFile('./diaoCookies_edited.json');
+  var cookies = JSON.parse(cookiesString);
   await page.setCookie(...cookies);
 }
 // var page;
@@ -169,7 +169,7 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         console.log("Region Picker Found");
         //////////
         // HUMAN INTERACTION TIMELINE
-        const WaitTime = 10;
+        var WaitTime = 10;
         var WaitCount=0;
         console.log("Optional Human Interaction... for 10 sec");
         while(WaitCount<WaitTime)
@@ -416,7 +416,7 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
 
         //COOKIE
         console.log("Waiting for Cookies...");
-        const cookies = await page.cookies();
+        var cookies = await page.cookies();
         console.log("Accepted Cookies...");
         console.log("Saving Cookies...");
         await fs.writeFile('./cookiesSignIn.json', JSON.stringify(cookies, null, 2));
@@ -475,11 +475,11 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         if(OTPProvider == 'SMS-Activate')
         {
           //SMS-Activate
-          console.log("Still Waiting for OTP");
+          console.log("Waiting for Phone Number");
           var status = false,attempt=0,Chance=5;
           while(!status && Chance>attempt)
           {
-            phoneSMS_Activate = await SMS.GetNikeNumber(OTP_API,OTP_Region_Code);
+            phoneSMS_Activate = await SMS.GetNikeNumber(OTP_API, OTP_Region_Code)
             if(await phoneSMS_Activate.status == true)
             {
               status= true;
@@ -494,7 +494,7 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
               status : false
             }
           }
-          console.log("OTP is given");
+          console.log("Phone Number is Given");
           //
         }
         //
@@ -504,7 +504,7 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         console.log("Phone Number is Given");
         console.log("Filling Phone Number");
         Rando_Delay = Math.floor(Math.random() * 100) + 50;
-        await page.type(phone, phoneSMS_Activate.phone, { delay: Rando_Delay });
+        await page.type(phone,await phoneSMS_Activate.data.phone, { delay: Rando_Delay });
         console.log("Entered Phone Number");
         console.log("Looking for Send OTP Button");
         await page.waitForSelector(sendNum);
@@ -523,28 +523,40 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         var OTP;
         if(OTPProvider == 'SMS-Activate')
         {
-          //SMS-Activate
+           //SMS-Activate
           console.log("Still Waiting for OTP");
-          
+          var OTP;
           var status = false,attempt=0,Chance=5;
           while(!status && Chance>attempt)
           {
-            OTP = await SMS.GetNikeOTP(OTP_API, await phoneSMS_Activate.id);
+            attempt++;
+            OTP = await SMS.GetNikeOTP(OTP_API, await phoneSMS_Activate.data.id);
             if(await OTP.status == true)
             {
               status= true;
             }else{
-              await delay(60000);
+              if(OTP.data == "STATUS_WAIT_CODE")
+              {
+                console.log("Waiting For Code ("+attempt+") Minute")
+                await delay(60000);
+              }
             }
           }
           if(await OTP.status == false)
           {
             console.log("OTP Verification Problem");
-            return {
-              status : false
+            console.log("Number "+await phoneSMS_Activate.data.phone +" is Cancelled");
+            var deleteNum = await SMS.CancelOTP(OTP_API,await phoneSMS_Activate.data.id);
+            if(deleteNum)
+            {
+              return {
+                status : false
+              }
             }
+          }else{
+
+            console.log("OTP is given");
           }
-          console.log("OTP is given");
           //
         }
         console.log("Filling OTP");
@@ -574,37 +586,39 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         console.log("Cookies Saved...");
 
         // console.log("");
-        const [jsCoverage, cssCoverage] = await Promise.all([
+        var [jsCoverage, cssCoverage] = await Promise.all([
           page.coverage.stopJSCoverage(),
           page.coverage.stopCSSCoverage(),
         ]);
         let totalBytes = 0;
         let usedBytes = 0;
-        const coverage = [...jsCoverage, ...cssCoverage];
-        for (const entry of coverage) {
+        var coverage = [...jsCoverage, ...cssCoverage];
+        for (var entry of coverage) {
           totalBytes += entry.text.length;
-          for (const range of entry.ranges) usedBytes += range.end - range.start - 1;
+          for (var range of entry.ranges) usedBytes += range.end - range.start - 1;
         }
         console.log(`Bytes used: ${(usedBytes / totalBytes) * 100}%`);
         
         return {
           status : true,
-          Email : emailVal,
-          Pass : passwordVal
+          Email : await emailVal,
+          Pass : await passwordVal,
+          Region : "VN",
+          Phone : await phoneSMS_Activate.data.original_phone
         }
       
     }catch(err)
     {
-      const [jsCoverage, cssCoverage] = await Promise.all([
+      var [jsCoverage, cssCoverage] = await Promise.all([
         page.coverage.stopJSCoverage(),
         page.coverage.stopCSSCoverage(),
       ]);
       let totalBytes = 0;
       let usedBytes = 0;
-      const coverage = [...jsCoverage, ...cssCoverage];
-      for (const entry of coverage) {
+      var coverage = [...jsCoverage, ...cssCoverage];
+      for (var entry of coverage) {
         totalBytes += entry.text.length;
-        for (const range of entry.ranges) usedBytes += range.end - range.start - 1;
+        for (var range of entry.ranges) usedBytes += range.end - range.start - 1;
       }
       console.log(`Until Error - Bytes used: ${(usedBytes / totalBytes) * 100}%`);
 
