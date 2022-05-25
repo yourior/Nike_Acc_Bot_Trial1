@@ -10,7 +10,7 @@ var AdblockerPlugin = require('puppeteer-extra-plugin-adblocker')
 puppeteer.use(AdblockerPlugin({ blockTrackers: true }))
 
 var {installMouseHelper} = require('./mouse-view');
-var SMS = require('./SMS_Activate');
+var SMS = require('../SMS_Activate');
 
 // var emailVal = 'TesterEmail' + '.' + (Math.floor((Math.random() * 9000) + 1000)).toString() + '@nguyenluck.com';
 // var smsEmail = 'ENTER GETSMSCODE.COM EMAIL ADDRESS';

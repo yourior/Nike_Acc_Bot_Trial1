@@ -1,5 +1,5 @@
-var Browser = require('./BrowserProcess');
-var Discord = require('./DiscordAPI');
+var Browser = require('./Internal/BrowserProcess');
+var Discord = require('./Internal/DiscordAPI');
 var BDate_Gen = require('dates-generator');
 // var nameGenerator = require('unique-names-generator');
 var ProfileGenerator = require('random-profile-generator');
@@ -91,7 +91,20 @@ var DiscordWebhook_Link = 'https://discord.com/api/webhooks/952973421443153960/_
       if(create.status == true)
       {
         Discord.DiscordWebhook(await create.Proxy,await create.Email,await create.Pass,await create.Region,await create.Phone);
+        
+        var userpass = (emailVal + ":" + passwordVal);
+        fs.appendFile('Accounts.txt', '\n'+userpass, (err) => {  
+          if (err) throw err;
+          console.log('Added User/Pass To Accounts.txt!');
+      });
       }
-      
-      }
+      //save to .txt file
+
+    }
 })();
+async function Proxy()
+{
+  var Proxy = await fs.readFile('../Proxy.txt');
+  // var Proxy = JSON.parse(Proxy);
+  await page.setCookie(...cookies);
+}
