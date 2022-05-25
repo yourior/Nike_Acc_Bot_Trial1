@@ -13,8 +13,8 @@ var passwordVal = 'Alkaline@tester123';
 var fNameVal ;
 var sNameVal ;
 var bDayVal = '01/05/19'+(Math.floor((Math.random() * (99-55)) + 55)).toString(); //Replace with your birthday if you wish.
-var proxyUrl = "193.239.196.252:6112:XRzuBniNmo:LHy19njEuy"; //if proxy exists enter it in format IP:PORT, if not leave blank
-// var proxyUrl = null;
+// var proxyUrl = "193.239.196.252:6112:XRzuBniNmo:LHy19njEuy"; //if proxy exists enter it in format IP:PORT, if not leave blank
+var proxyUrl = null;
 var proxyUser = null; //If proxy username/pass exists insert it here if not leave both variables blank
 var proxyPass = null;
 var GenderVal = 'm';
@@ -34,8 +34,8 @@ var Chrome_Windows = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe
   const year = Math.floor((Math.random()*(presentDay.getFullYear() - 16 - (presentDay.getFullYear()-80 ))) + (presentDay.getFullYear()-80 ));
   const month = Math.floor((Math.random() * 12 )+ 1);
   const day = Math.floor((Math.random() * BDate_Gen.daysInMonth( year,  month) )+ 1);
-  bDayVal = day+'/'+month+"/"+year;
-  console.log("bDayVal : "+bDayVal);
+  bDayVal = month+'/'+day+"/"+year;
+  
   // var nameGenerate= (nameGenerator.Config = {
   //   dictionaries: [nameGenerator.names]
   // })
@@ -75,7 +75,7 @@ var Chrome_Windows = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe
     console.log("SMS-Activate Nike Vietnam Phone Count : "+SMS_Activate_Phone_Count.count+" - Cost : "+SMS_Activate_Phone_Count.cost);
     console.log("Can Create "+Math.floor(SMS_Activate_Balance/SMS_Activate_Phone_Count.cost)+' Account');
     console.log("Email : "+emailVal+"\nfname : "+fNameVal+"\nsname : "+sNameVal);
-
+    console.log("bDayVal (MM/DD/YYY): "+bDayVal);
     if(SMS_Activate_Phone_Count==0)
     {
       console.log("not enough phone number on the region");

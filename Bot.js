@@ -1,4 +1,5 @@
 const puppeteer = require('puppeteer-extra');
+// const {TimeoutError} = require('puppeteer/Errors');
 // const SMSActivate = require('sms-activate');
 const { createCursor } = require ("ghost-cursor");
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
@@ -47,6 +48,15 @@ const Send_OTPButton = '#\\39 1782026-e9af-47cc-9868-119a10f7cbcb';
 const OTPFill = '#\\38 11824e8-cb24-482c-a1d7-f93de0355b02';
 const AgreeButtonOTP = '#progressiveMobile > label';
 const OTPContinue = '#\\37 a4b14c5-66fd-4af4-863d-a71181f2c81d';
+//
+const EmailDuplicate = '#deb378bc-824e-42b2-8470-3be499cfebd5';
+const EmailNotValid = '#bfcbd896-8086-496b-8c4f-601c3b3b2da9 > div.error';
+const PassNotValid = '#\\33 bc52eaf-24d9-4c97-8dc5-62c33ad80bcd > div.error';
+const FnameNotValid = '#\\36 1c884b4-161f-42c8-b975-42ee6c4dd910 > div.error';
+const SnameNotValid = '#a7aa3fd0-0dd0-4956-9e67-1d867ff43ed8 > div.error';
+const DOBNotValid = '#\\32 6e24c95-5462-4038-9c4c-c8168280ac68 > div.error';
+const GenderNotValid = '#\\30 eeb5b56-fecf-4d97-a2ee-158f7c3dce29 > div.error';
+//
 //GET DOM TRAVERSAL VALUES
 const AcceptCookies = '#cookie-settings-layout > div > div > div > div.ncss-row.mt5-sm.mb7-sm > div:nth-child(2) > button';
 const loginBtn = 'li.member-nav-item.d-sm-ib.va-sm-m > button';
@@ -192,9 +202,9 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         await cursor.click();
         console.log("Register Button (1) Clicked");
 
-        console.log("Join us Layout is Loading");
-        await page.waitForNavigation({waitUntil: 'networkidle0'});
-        console.log("Join us Layout is Loaded");
+        // console.log("Join us Layout is Loading");
+        // await page.waitForNavigation({waitUntil: 'networkidle0'});
+        // console.log("Join us Layout is Loaded");
 
         console.log("Looking for register Button (2)");
         await page.waitForSelector(Dashboard_Signup_2);
@@ -206,55 +216,171 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         await page.waitForNavigation({ waitUntil: 'networkidle0' });
         console.log("Register Page is Loaded");
 
-        console.log("Looking for Email TextBox");
-        await page.waitForSelector(email,{visible: true, hidden: false});
-        console.log("email: " + emailVal);
-        await cursor.click(email);
-        Rando_Delay = Math.floor(Math.random() * 100) + 50;
-        await page.type(email, emailVal, { delay: Rando_Delay });
-        console.log("entered email");
-    
-        console.log("Looking for Password TextBox");
-        await page.waitForSelector(password,{visible: true, hidden: false});
-        await cursor.click(password);
-        Rando_Delay = Math.floor(Math.random() * 100) + 50;
-        await page.type(password, passwordVal, { delay: Rando_Delay });
-        console.log("entered Password");
-  
-        console.log("Looking for Fname TextBox");
-        await page.waitForSelector(fName,{visible: true, hidden: false});
-        await cursor.click(fName);
-        Rando_Delay = Math.floor(Math.random() * 100) + 50;
-        await page.type(fName, fNameVal, { delay: Rando_Delay });
-        console.log("entered Fname");
-  
-        console.log("Looking for sName TextBox");
-        await page.waitForSelector(sName,{visible: true, hidden: false});
-        await cursor.click(sName);
-        Rando_Delay = Math.floor(Math.random() * 100) + 50;
-        await page.type(sName, sNameVal, { delay: Rando_Delay });
-        console.log("entered sName");
-  
-        console.log("Looking for DOB TextBox");
-        await page.waitForSelector(dob,{visible: true, hidden: false});
-        await cursor.click(dob);
-        Rando_Delay = Math.floor(Math.random() * 100) + 50;
-        await page.type(dob, bDayVal, { delay: Rando_Delay });
-        console.log("entered DOB");
-  
+        var passedSignIn = false,attemptSignin=0,trySignIn= 3;
+        while(!passedSignIn )
+        {
+          if(attemptSignin>trySignIn)
+          {
+            console.log("Too Many Wrong Attempt");
+            return {
+              status : false
+            } 
+          }
+          attemptSignin++;
+          console.log("Looking for Email TextBox");
+          await page.waitForSelector(email,{visible: true, hidden: false});
+          console.log("email: " + emailVal);
+          await cursor.click(email);
+          Rando_Delay = Math.floor(Math.random() * 100) + 50;
+          await page.type(email, emailVal, { delay: Rando_Delay });
+          console.log("entered email");
+
+          try {
+            await page.waitForSelector(EmailDuplicate, {timeout: 1000});
+            console.log("Email is Already Registered -> Trying to make a new One");
+            //remaking Email
+            var Array = email.split("@");
+            Array[0] = Array[0]+"2";
+            email = Array[0]+"@"+Array[1];
+            /////
+            //Then redo input
+          } catch (e) {
+              // Do something if this is a timeout.
+            try{
+              await page.waitForSelector(EmailNotValid, {timeout: 1000});
+              console.log("Email is not Clicked or filled correctly");
+              //reInput
+            }catch (e) {
+                passedSignIn = true;
+              }
+            }
+        }
+        passedSignIn = false,attemptSignin=0,trySignIn= 3;
+        while(!passedSignIn )
+        {
+          if(attemptSignin>trySignIn)
+          {
+            console.log("Too Many Wrong Attempt");
+            return {
+              status : false
+            } 
+          }
+          attemptSignin++;
+          console.log("Looking for Password TextBox");
+          await page.waitForSelector(password,{visible: true, hidden: false});
+          await cursor.click(password);
+          Rando_Delay = Math.floor(Math.random() * 100) + 50;
+          await page.type(password, passwordVal, { delay: Rando_Delay });
+          console.log("entered Password");
+          try {
+            await page.waitForSelector(PassNotValid, {timeout: 1000});
+            console.log("Password is not Valid");
+            //reInput
+          } catch (e) {
+            passedSignIn = true;
+          }
+        }
+        passedSignIn = false,attemptSignin=0,trySignIn= 3;
+        while(!passedSignIn && trySignIn>attemptSignin)
+        {
+          attemptSignin++;
+          console.log("Looking for Fname TextBox");
+          await page.waitForSelector(fName,{visible: true, hidden: false});
+          await cursor.click(fName);
+          Rando_Delay = Math.floor(Math.random() * 100) + 50;
+          await page.type(fName, fNameVal, { delay: Rando_Delay });
+          console.log("entered Fname");
+          try {
+            await page.waitForSelector(FnameNotValid, {timeout: 1000});
+            console.log("FName is not Valid");
+            //reInput
+          } catch (e) {
+            passedSignIn = true;
+          }
+        }
+        passedSignIn = false,attemptSignin=0,trySignIn= 3;
+        while(!passedSignIn )
+        {
+          if(attemptSignin>trySignIn)
+          {
+            console.log("Too Many Wrong Attempt");
+            return {
+              status : false
+            } 
+          }
+          attemptSignin++;
+          console.log("Looking for sName TextBox");
+          await page.waitForSelector(sName,{visible: true, hidden: false});
+          await cursor.click(sName);
+          Rando_Delay = Math.floor(Math.random() * 100) + 50;
+          await page.type(sName, sNameVal, { delay: Rando_Delay });
+          console.log("entered sName");
+
+          try {
+            await page.waitForSelector(SnameNotValid, {timeout: 1000});
+            console.log("SName is not Valid");
+            //reInput
+          } catch (e) {
+            passedSignIn = true;
+          }
+        }
+        passedSignIn = false,attemptSignin=0,trySignIn= 3;
+        while(!passedSignIn )
+        {
+          if(attemptSignin>trySignIn)
+          {
+            console.log("Too Many Wrong Attempt");
+            return {
+              status : false
+            } 
+          }
+          attemptSignin++;
+          console.log("Looking for DOB TextBox");
+          await page.waitForSelector(dob,{visible: true, hidden: false});
+          await cursor.click(dob);
+          Rando_Delay = Math.floor(Math.random() * 100) + 50;
+          await page.type(dob, bDayVal, { delay: Rando_Delay });
+          console.log("entered DOB");
+          try {
+            await page.waitForSelector(DOBNotValid, {timeout: 1000});
+            console.log("DOB is not Valid");
+            //reInput
+          } catch (e) {
+            passedSignIn = true;
+          }
+        }
         console.log("Looking for Region Dropdown");
         // await page.waitForSelector(Region_Signup);
         console.log("Region Dropdown Skip FOR NOW");
   
-        console.log("Looking for Gender Button");
-        if(GenderVal=='m')
+        passedSignIn = false,attemptSignin=0,trySignIn= 3;
+        while(!passedSignIn )
         {
-          await page.waitForSelector(gender_male,{visible: true, hidden: false});
-          await cursor.click(gender_male);
-        }else if(GenderVal=='f')
-        {
-          await page.waitForSelector(gender_female,{visible: true, hidden: false});
-          await cursor.click(gender_female);
+          if(attemptSignin>trySignIn)
+          {
+            console.log("Too Many Wrong Attempt");
+            return {
+              status : false
+            } 
+          }
+          attemptSignin++;
+          console.log("Looking for Gender Button");
+          if(GenderVal=='m')
+          {
+            await page.waitForSelector(gender_male,{visible: true, hidden: false});
+            await cursor.click(gender_male);
+          }else if(GenderVal=='f')
+          {
+            await page.waitForSelector(gender_female,{visible: true, hidden: false});
+            await cursor.click(gender_female);
+          }
+          try {
+            await page.waitForSelector(GenderNotValid, {timeout: 1000});
+            console.log("Gender is not Valid");
+            //reInput
+          } catch (e) {
+            passedSignIn = true;
+          }
         }
         console.log("entered Gender Button");
   
@@ -263,7 +389,7 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         await cursor.click(submit);
 
         console.log("submitted");
-        await page.waitForNavigation({ waitUntil: 'networkidle0' });
+        // await page.waitForNavigation({ waitUntil: 'networkidle0' });
 
         console.log("email : "+emailVal+" - pass : "+passwordVal);
 
@@ -294,9 +420,9 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         await cursor.move(ProfileClick_step2);
         await cursor.click();
 
-        console.log("Profile Section is Loading");
-        await page.waitForNavigation({ waitUntil: 'networkidle0' });
-        console.log("Profile Section is Loaded");
+        // console.log("Profile Section is Loading");
+        // await page.waitForNavigation({ waitUntil: 'networkidle0' });
+        // console.log("Profile Section is Loaded");
 
         console.log("Go to Profile Section, Looking for Account Setting Button");
         await page.waitForSelector(ProfileClick_step3,{visible: true, hidden: false});
@@ -304,9 +430,9 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         await cursor.click();
         console.log("Account Setting Found");
 
-        console.log("Account Setting is Loading");
-        await page.waitForNavigation({ waitUntil: 'networkidle0' });
-        console.log("Account Setting is Loaded");
+        // console.log("Account Setting is Loading");
+        // await page.waitForNavigation({ waitUntil: 'networkidle0' });
+        // console.log("Account Setting is Loaded");
 
         console.log("Looking for Add Phone Number Button");
         await page.waitForSelector(AddNumber,{visible: true, hidden: false});
@@ -437,6 +563,7 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
           Email : emailVal,
           Pass : passwordVal
         }
+      
     }catch(err)
     {
       const [jsCoverage, cssCoverage] = await Promise.all([
