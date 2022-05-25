@@ -164,6 +164,7 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         console.log("Get Region Picker");
         await page.waitForSelector(Dasboard_RegionPicker,{visible: true, hidden: false});
         await cursor.move(Dasboard_RegionPicker);
+        await page.focus(Dasboard_RegionPicker);
         await cursor.click();
         console.log("Region Picker Found");
         //////////
@@ -184,6 +185,7 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         console.log("Get Region Vietnam");
         await page.waitForSelector(Dashboard_RegionPicker_VN,{visible: true, hidden: false});
         await cursor.move(Dashboard_RegionPicker_VN);
+        await page.focus(Dashboard_RegionPicker_VN);
         await cursor.click();
         console.log("Region Vietnam Found");
         //////////
@@ -196,9 +198,11 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         // //////////////////
         await page.waitForSelector(Menu_Option_NONFULL,{visible: true, hidden: false});
         await cursor.move(Menu_Option_NONFULL);
+        await page.focus(Menu_Option_NONFULL);
         await cursor.click();
         await page.waitForSelector(DashBoard_SignUp_NONFULL,{visible: true, hidden: false});
         await cursor.move(DashBoard_SignUp_NONFULL);
+        await page.focus(DashBoard_SignUp_NONFULL);
         await cursor.click();
         console.log("Register Button (1) Clicked");
 
@@ -209,6 +213,7 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         console.log("Looking for register Button (2)");
         await page.waitForSelector(Dashboard_Signup_2);
         await cursor.move(Dashboard_Signup_2);
+        await page.focus(Dashboard_Signup_2);
         await cursor.click();
         console.log("Register Button (2) Clicked");
 
@@ -230,7 +235,9 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
           console.log("Looking for Email TextBox");
           await page.waitForSelector(email,{visible: true, hidden: false});
           console.log("email: " + emailVal);
-          await cursor.click(email);
+          await cursor.move(email);
+          await page.focus(email);
+          await cursor.click();
           Rando_Delay = Math.floor(Math.random() * 100) + 50;
           await page.type(email, emailVal, { delay: Rando_Delay });
           console.log("entered email");
@@ -268,7 +275,9 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
           attemptSignin++;
           console.log("Looking for Password TextBox");
           await page.waitForSelector(password,{visible: true, hidden: false});
-          await cursor.click(password);
+          await cursor.move(password);
+          await page.focus(password);
+          await cursor.click();
           Rando_Delay = Math.floor(Math.random() * 100) + 50;
           await page.type(password, passwordVal, { delay: Rando_Delay });
           console.log("entered Password");
@@ -286,7 +295,9 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
           attemptSignin++;
           console.log("Looking for Fname TextBox");
           await page.waitForSelector(fName,{visible: true, hidden: false});
-          await cursor.click(fName);
+          await cursor.move(fName);
+          await page.focus(fName);
+          await cursor.click();
           Rando_Delay = Math.floor(Math.random() * 100) + 50;
           await page.type(fName, fNameVal, { delay: Rando_Delay });
           console.log("entered Fname");
@@ -311,7 +322,9 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
           attemptSignin++;
           console.log("Looking for sName TextBox");
           await page.waitForSelector(sName,{visible: true, hidden: false});
-          await cursor.click(sName);
+          await cursor.move(sName);
+          await page.focus(sName);
+          await cursor.click();
           Rando_Delay = Math.floor(Math.random() * 100) + 50;
           await page.type(sName, sNameVal, { delay: Rando_Delay });
           console.log("entered sName");
@@ -337,7 +350,9 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
           attemptSignin++;
           console.log("Looking for DOB TextBox");
           await page.waitForSelector(dob,{visible: true, hidden: false});
-          await cursor.click(dob);
+          await cursor.move(dob);
+          await page.focus(dob);
+          // await cursor.click();
           Rando_Delay = Math.floor(Math.random() * 100) + 50;
           await page.type(dob, bDayVal, { delay: Rando_Delay });
           console.log("entered DOB");
@@ -368,11 +383,15 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
           if(GenderVal=='m')
           {
             await page.waitForSelector(gender_male,{visible: true, hidden: false});
-            await cursor.click(gender_male);
+            await cursor.move(gender_male);
+            await page.focus(gender_male);
+            await cursor.click();
           }else if(GenderVal=='f')
           {
             await page.waitForSelector(gender_female,{visible: true, hidden: false});
-            await cursor.click(gender_female);
+            await cursor.move(gender_female);
+            await page.focus(gender_female);
+            await cursor.click();
           }
           try {
             await page.waitForSelector(GenderNotValid, {timeout: 1000});
@@ -386,7 +405,9 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
   
         console.log("Looking for Submit Button");
         await page.waitForSelector(submit,{visible: true, hidden: false});
-        await cursor.click(submit);
+        await cursor.move(submit);
+        await page.focus(submit);
+        await cursor.click();
 
         console.log("submitted");
         // await page.waitForNavigation({ waitUntil: 'networkidle0' });
@@ -442,8 +463,9 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         //
 
         console.log("Looking for Phone Number Text Box");
-        await page.waitForSelector(FillNumber);
-        await cursor.move(AddNumber);
+        await page.waitForSelector(phone);
+        await cursor.move(phone);
+        await page.focus(phone);
         await cursor.click();
         console.log("Phone Number Text Box Found");
         console.log("Asking for Phone Number");
@@ -476,24 +498,26 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
           //
         }
         //
-        Rando_Delay = Math.floor(Math.random() * 100) + 50;
-        await page.type(AddNumber, phoneSMS_Activate.phone, { delay: Rando_Delay });
+        // Rando_Delay = Math.floor(Math.random() * 100) + 50;
+        // await page.type(AddNumber, phoneSMS_Activate.phone, { delay: Rando_Delay });
 
         console.log("Phone Number is Given");
         console.log("Filling Phone Number");
         Rando_Delay = Math.floor(Math.random() * 100) + 50;
-        await page.type(AddNumber, phoneSMS_Activate, { delay: Rando_Delay });
+        await page.type(phone, phoneSMS_Activate.phone, { delay: Rando_Delay });
         console.log("Entered Phone Number");
         console.log("Looking for Send OTP Button");
-        await page.waitForSelector(Send_OTPButton);
-        await cursor.move(Send_OTPButton);
+        await page.waitForSelector(sendNum);
+        await cursor.move(sendNum);
+        await page.focus(sendNum);
         await cursor.click();
         console.log("Send OTP Button Found");
         console.log("Waiting For OTP");
         console.log("While Waiting For OTP, System is Looking for OTP TextBox");
-        await page.waitForSelector(OTPFill);
+        await page.waitForSelector(enterTheValue);
         console.log("OTP TextBox Found");
-        await cursor.move(OTPFill);
+        await cursor.move(enterTheValue);
+        await page.focus(enterTheValue);
         await cursor.click();
 
         var OTP;
@@ -523,15 +547,20 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
           console.log("OTP is given");
           //
         }
-        
+        console.log("Filling OTP");
+        Rando_Delay = Math.floor(Math.random() * 100) + 50;
+        await page.type(enterTheValue, OTP.data, { delay: Rando_Delay });
+
         console.log("Looking for Agree Button");
         await page.waitForSelector(AgreeButtonOTP);
         await cursor.move(AgreeButtonOTP);
+        await page.focus(AgreeButtonOTP);
         await cursor.click();
         console.log("it is agreed");
         console.log("Looking for Accept Button");
-        await page.waitForSelector(OTPContinue);
-        await cursor.move(OTPContinue);
+        await page.waitForSelector(storedSubmit);
+        await cursor.move(storedSubmit);
+        await page.focus(storedSubmit);
         await cursor.click();
         console.log("OTP is given to Nike");
 

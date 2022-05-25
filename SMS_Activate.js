@@ -148,7 +148,7 @@ exports.GetNikeNumber = async(api_key,country_code) =>
       
       axios(config)
       .then(async function (response) {
-        var data = (JSON.stringify(response.data));
+        var data = (await response.data);
         if(data.includes("ACCESS_NUMBER"))
         {
             var array = data.split(':');
@@ -202,7 +202,7 @@ exports.GetNikeOTP = async(api_key,id)=>
     return await axios(config)
     .then(async function (response) {
         // console.log(JSON.stringify(response.data));
-        var data = JSON.stringify(await response.data);
+        var data = await response.data;
         if(data.includes("ACCESS_NUMBER"))
         {
             var array = data.split(':');
@@ -248,7 +248,7 @@ exports.CancelOTP = async(api_key,id) =>
       
       return await axios(config)
       .then(async function (response) {
-        var data = JSON.stringify(response.data);
+        var data = await response.data;
         if(data == 'ACCESS_CANCEL ')
         {
             return{
