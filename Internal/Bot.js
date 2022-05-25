@@ -598,14 +598,15 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
           for (var range of entry.ranges) usedBytes += range.end - range.start - 1;
         }
         console.log(`Bytes used: ${(usedBytes / totalBytes) * 100}%`);
-        
-        return {
+        var json = {
           status : true,
           Email : await emailVal,
           Pass : await passwordVal,
           Region : "VN",
           Phone : await phoneSMS_Activate.data.original_phone
         }
+        console.log(JSON.stringify(json));
+        return json;
       
     }catch(err)
     {

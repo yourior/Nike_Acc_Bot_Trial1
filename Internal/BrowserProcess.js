@@ -131,7 +131,7 @@ exports.Browser = async (count,Module,Chrome,BrowserTimeOut=120000,Try,proxyUrl=
             if(await task.status == true)
               {
                 browser.close();
-                return {
+                var json = {
                   status : true,
                   Email : await task.Email,
                   Pass : await task.Pass,
@@ -139,6 +139,8 @@ exports.Browser = async (count,Module,Chrome,BrowserTimeOut=120000,Try,proxyUrl=
                   Phone : await task.Phone,
                   Proxy : await proxyUrl
                 }
+                console.log(JSON.stringify(json));
+                return json;
               }else if(await task.status == false){
                 if(await task.data == "TimeoutError")
                 {
