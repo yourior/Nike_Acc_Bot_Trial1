@@ -1,7 +1,7 @@
 var RunBot = require('./Internal/StartPanel');
-
 // const { log } = require('console');
-
+var Region = require('./Internal/RegionManager');
+var SMS_Activate = require('./Internal/SMS_Activate');
 var readlineSync = require('readline-sync');
 var fs = require('fs');
 var startTime, endTime;
@@ -22,7 +22,31 @@ function end() {
 }
 (async() =>
 {
+    var API_Key = readlineSync.question('SMS-Activate API Key : ');
+
+    if(API_Key==null)
+    {
+        console.log("Must Use SMS-Activate API Key");
+        process.exit();
+    }
     var ProxyLocation = readlineSync.question('Proxy File Location? (if using localhost, just skip it) : ');
+
+    do{
+        var RegionQ = readlineSync.question('Input Region Code (ex Malaysia => my) : ');
+        var result = await Region.getRegion(RegionQ);
+    }while(!result)
+    var SMS_Activate_Balance = (await (await SMS_Activate.GetBalance(API_Key)).data);
+    var SMS_Activate_Phone_Count = await (await SMS_Activate.CountNikePhoneNumber(API_Key,result.SmsActivate_Region_Code)).data;
+    console.log("SMS-Activate Balance : "+SMS_Activate_Balance);
+    console.log("SMS-Activate Nike ( "+RegionQ+" ) Phone Count : "+await SMS_Activate_Phone_Count.count+" - Cost : "+await SMS_Activate_Phone_Count.cost);
+    var Approx = Math.floor(SMS_Activate_Balance/SMS_Activate_Phone_Count.cost);
+    console.log("Can Create Approximately "+Approx+' Account');
+    if(await SMS_Activate_Phone_Count.count<=0 || Approx<=0)
+    {
+        console.log("No Account can be created");
+        process.exit();
+    }
+
     var TotalAccGen = readlineSync.question('Total Acc Gen : ');
     var CustomPassword = readlineSync.question('Input Custom Password (if there is any) : ');
     var TotalAttempt = readlineSync.question('Total Attempt : ');
@@ -42,6 +66,17 @@ function end() {
     start();
     while(TotalAccGen>acc_gen && TotalAttempt>=attempt)
     {
+        SMS_Activate_Balance = (await (await SMS_Activate.GetBalance(API_Key)).data);
+        SMS_Activate_Phone_Count = await (await SMS_Activate.CountNikePhoneNumber(API_Key,result.SmsActivate_Region_Code)).data;
+        console.log("SMS-Activate Nike ( "+RegionQ+" ) Phone Count : "+await SMS_Activate_Phone_Count.count);
+        Approx = Math.floor(SMS_Activate_Balance/SMS_Activate_Phone_Count.cost);
+        if(await SMS_Activate_Phone_Count.count<=0 || Approx<=0)
+        {
+            console.log("No Account can be created");
+            // process.exit();
+            break;
+        }
+
         console.log("Proxy Count : "+ ProxyLocation.length);
         console.log("Final Status : \n Total Acc Gen/Target Acc Gen/Attempt : "+await acc_gen+"/"+TotalAccGen+"/"+attempt);
         if(ProxyLocation!=null)

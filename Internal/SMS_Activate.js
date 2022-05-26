@@ -116,7 +116,7 @@ exports.CountNikePhoneNumber = async(api_key,country_code) =>
       
       return await axios(config)
       .then(async function (response) {
-          var data = await response.data[10].ew;
+          var data = await response.data[country_code].ew;
         //   console.log(data[10]);
         return {
             status : true,

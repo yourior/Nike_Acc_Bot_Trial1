@@ -104,10 +104,10 @@ exports.Run = async (browserCount,proxy,CustomPass = null) =>
         }
         //////
         // var SMS_Activate_Balance = (await (await SMS_Activate.GetBalance(OTP_API)).data).replace('ACCESS_BALANCE:', '');
-        var SMS_Activate_Balance = (await (await SMS_Activate.GetBalance(OTP_API)).data);
-        var SMS_Activate_Phone_Count = await (await SMS_Activate.CountNikePhoneNumber(OTP_API,OTP_Region_Code)).data;
-        console.log("SMS-Activate Balance : "+SMS_Activate_Balance);
-        console.log("SMS-Activate Nike Vietnam Phone Count : "+SMS_Activate_Phone_Count.count+" - Cost : "+SMS_Activate_Phone_Count.cost);
+        // var SMS_Activate_Balance = (await (await SMS_Activate.GetBalance(OTP_API)).data);
+        // var SMS_Activate_Phone_Count = await (await SMS_Activate.CountNikePhoneNumber(OTP_API,OTP_Region_Code)).data;
+        // console.log("SMS-Activate Balance : "+SMS_Activate_Balance);
+        // console.log("SMS-Activate Nike Vietnam Phone Count : "+SMS_Activate_Phone_Count.count+" - Cost : "+SMS_Activate_Phone_Count.cost);
         console.log("Can Create Approximately "+Math.floor(SMS_Activate_Balance/SMS_Activate_Phone_Count.cost)+' Account');
         console.log("Email : "+emailVal+"\nfname : "+fNameVal+"\nsname : "+sNameVal);
         console.log("bDayVal (MM/DD/YYY): "+bDayVal);
