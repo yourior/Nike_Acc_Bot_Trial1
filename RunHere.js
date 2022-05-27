@@ -36,10 +36,10 @@ function end() {
         var result = await Region.getRegion(RegionQ);
     }while(!result)
     var SMS_Activate_Balance = (await (await SMS_Activate.GetBalance(API_Key)).data);
-    var SMS_Activate_Phone_Count = await (await SMS_Activate.CountNikePhoneNumber(API_Key,result.SmsActivate_Region_Code)).data;
+    var SMS_Activate_Phone_Count = await (await SMS_Activate.CountNikePhoneNumber(API_Key,await result.SmsActivate_Region_Code)).data;
     console.log("SMS-Activate Balance : "+SMS_Activate_Balance);
     console.log("SMS-Activate Nike ( "+RegionQ+" ) Phone Count : "+await SMS_Activate_Phone_Count.count+" - Cost : "+await SMS_Activate_Phone_Count.cost);
-    var Approx = Math.floor(SMS_Activate_Balance/SMS_Activate_Phone_Count.cost);
+    var Approx = Math.floor(await SMS_Activate_Balance/await SMS_Activate_Phone_Count.cost);
     console.log("Can Create Approximately "+Approx+' Account');
     if(await SMS_Activate_Phone_Count.count<=0 || Approx<=0)
     {
@@ -66,16 +66,16 @@ function end() {
     start();
     while(TotalAccGen>acc_gen && TotalAttempt>=attempt)
     {
-        SMS_Activate_Balance = (await (await SMS_Activate.GetBalance(API_Key)).data);
-        SMS_Activate_Phone_Count = await (await SMS_Activate.CountNikePhoneNumber(API_Key,result.SmsActivate_Region_Code)).data;
-        console.log("SMS-Activate Nike ( "+RegionQ+" ) Phone Count : "+await SMS_Activate_Phone_Count.count);
-        Approx = Math.floor(SMS_Activate_Balance/SMS_Activate_Phone_Count.cost);
-        if(await SMS_Activate_Phone_Count.count<=0 || Approx<=0)
-        {
-            console.log("No Account can be created");
-            // process.exit();
-            break;
-        }
+        // SMS_Activate_Balance = (await (await SMS_Activate.GetBalance(API_Key)).data);
+        // SMS_Activate_Phone_Count = await (await SMS_Activate.CountNikePhoneNumber(await API_Key,await result.SmsActivate_Region_Code)).data;
+        // console.log("SMS-Activate Nike ( "+RegionQ+" ) Phone Count : "+await SMS_Activate_Phone_Count.count);
+        // Approx = Math.floor(await SMS_Activate_Balance/await SMS_Activate_Phone_Count.cost);
+        // if(await SMS_Activate_Phone_Count.count<=0 || Approx<=0)
+        // {
+        //     console.log("No Account can be created");
+        //     // process.exit();
+        //     break;
+        // }
 
         console.log("Proxy Count : "+ ProxyLocation.length);
         console.log("Final Status : \n Total Acc Gen/Target Acc Gen/Attempt : "+await acc_gen+"/"+TotalAccGen+"/"+attempt);

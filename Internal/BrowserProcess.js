@@ -28,6 +28,7 @@ exports.Browser = async (count,Module,Chrome,BrowserTimeOut=120000,proxyUrl=null
       // var page;
       if(proxyUrl != null)
       {
+        
             // const page = await browser.newPage();
         browser = await puppeteer.launch({
             args: [
@@ -117,6 +118,7 @@ exports.Browser = async (count,Module,Chrome,BrowserTimeOut=120000,proxyUrl=null
         }
         proxyUrl = "LocalHost"
       }
+      console.log("Proxy Used : "+proxyUrl);
       try {
 
         await page.setDefaultNavigationTimeout(BrowserTimeOut);
