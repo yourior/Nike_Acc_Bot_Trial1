@@ -146,7 +146,7 @@ async function ReuseCookies(page)
   await page.setCookie(...cookies);
 }
 // var page;
-exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayVal,GenderVal,OTPProvider='SMS-Activate',OTP_API,OTP_Region_Code) => {
+exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayVal,GenderVal,OTPProvider='SMS-Activate') => {
   console.log("The Bot is starting...");
   try{
       cursor = createCursor(page);
@@ -479,11 +479,19 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
           var status = false,attempt=0,Chance=5;
           while(!status && Chance>attempt)
           {
-            phoneSMS_Activate = await SMS.GetNikeNumber(OTP_API, OTP_Region_Code)
+            phoneSMS_Activate = await SMS.GetNikeNumber()
             if(await phoneSMS_Activate.status == true)
             {
               status= true;
             }else{
+              if(phoneSMS_Activate.data == "NO_NUMBERS" || phoneSMS_Activate.data == "NO_BALANCE")
+              {
+                console.log("Cannot Create more Account (No More Number / Out of Balance)");
+                return {
+                  status : false,
+                  data : phoneSMS_Activate.data
+                }
+              }
               await delay(60000);
             }
           }
@@ -530,7 +538,7 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
           while(!status && Chance>attempt)
           {
             attempt++;
-            OTP = await SMS.GetNikeOTP(OTP_API, await phoneSMS_Activate.data.id);
+            OTP = await SMS.GetNikeOTP(await phoneSMS_Activate.data.id);
             if(await OTP.status == true)
             {
               status= true;
@@ -546,7 +554,7 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
           {
             console.log("OTP Verification Problem");
             console.log("Number "+await phoneSMS_Activate.data.phone +" is Cancelled");
-            var deleteNum = await SMS.CancelOTP(OTP_API,await phoneSMS_Activate.data.id);
+            var deleteNum = await SMS.CancelOTP(await phoneSMS_Activate.data.id);
             if(deleteNum)
             {
               return {

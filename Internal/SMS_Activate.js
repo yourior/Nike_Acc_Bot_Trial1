@@ -1,10 +1,26 @@
 var axios = require('axios');
-exports.GetBalance = async(api_key) =>
+var RegionManager = require('./RegionManager');
+var SMS_api_key,SMS_country_code;
+exports.SetSMSActivate = async(api_key,country_code) =>
 {
+    this.SMS_api_key = await api_key;
+    this.SMS_country_code = await country_code;
+    console.log(await api_key+" - "+await country_code);
+}
+exports.GetSMSActivate = async() =>
+{
+    return {
+        SMS_api_key : await this.SMS_api_key,
+        SMS_country_code : await this.SMS_country_code
+    }
+}
+exports.GetBalance = async() =>
+{
+    // console.log("GetBalance : "+await this.SMS_api_key+" - "+await this.SMS_country_code);
     // var host = "https://api.sms-activate.org/stubs/handler_api.php";
     return await axios(
         {
-            url:'https://api.sms-activate.org/stubs/handler_api.php?api_key='+api_key+'&action=getBalance',
+            url:'https://api.sms-activate.org/stubs/handler_api.php?api_key='+await this.SMS_api_key+'&action=getBalance',
             method:'get',
             timeout:10000,
             
@@ -53,12 +69,12 @@ exports.GetBalance = async(api_key) =>
         }  
     });
 }
-exports.GetBalanceAndCashBack = async(api_key) =>
+exports.GetBalanceAndCashBack = async() =>
 {
     // var host = "https://api.sms-activate.org/stubs/handler_api.php";
     return await axios(
         {
-            url:'https://api.sms-activate.org/stubs/handler_api.php?api_key='+api_key+'&action=getBalanceAndCashBack',
+            url:'https://api.sms-activate.org/stubs/handler_api.php?api_key='+await this.SMS_api_key+'&action=getBalanceAndCashBack',
             method:'get',
             timeout:10000,
         }
@@ -106,18 +122,19 @@ exports.GetBalanceAndCashBack = async(api_key) =>
         }   
     });
 }
-exports.CountNikePhoneNumber = async(api_key,country_code) =>
+exports.CountNikePhoneNumber = async() =>
 {
+    console.log("CountNikePhoneNumber : "+await this.SMS_api_key+" - "+await this.SMS_country_code);
     var config = {
         method: 'get',
-        url: 'https://api.sms-activate.org/stubs/handler_api.php?api_key='+await api_key+'&action=getPrices&service=ew&country='+await country_code,
+        url: 'https://api.sms-activate.org/stubs/handler_api.php?api_key='+await this.SMS_api_key+'&action=getPrices&service=ew&country='+await this.SMS_country_code,
         headers: { }
       };
       
       return await axios(config)
       .then(async function (response) {
-          var data = await response.data[country_code].ew;
-        //   console.log(data[10]);
+          var data = await response.data[await this.SMS_country_code].ew;
+          console.log(data);
         return {
             status : true,
             data : 
@@ -138,11 +155,11 @@ exports.CountNikePhoneNumber = async(api_key,country_code) =>
         } 
       });
 }
-exports.GetNikeNumber = async(api_key,country_code) =>
+exports.GetNikeNumber = async() =>
 {
     var config = {
         method: 'get',
-        url: 'https://sms-activate.org/stubs/handler_api.php?api_key='+api_key+'&action=getNumber&service=ew&country='+country_code,
+        url: 'https://sms-activate.org/stubs/handler_api.php?api_key='+await this.SMS_api_key+'&action=getNumber&service=ew&country='+await this.SMS_country_code,
         headers: { }
       };
       
@@ -164,7 +181,7 @@ exports.GetNikeNumber = async(api_key,country_code) =>
             // var initial = '+84';
             // // phone[0] = initial;
             var final_phone = "";
-            for(var i=2;i<phone.length;i++)//vn
+            for(var i= await RegionManager.SetRegion().Phone_Prefix_Length ;i<phone.length; i++)//vn
             {
                 console.log("process "+i+" result : "+final_phone);
                 final_phone = final_phone.concat(phone[i]);
@@ -205,11 +222,11 @@ exports.GetNikeNumber = async(api_key,country_code) =>
         };
       });
 }
-exports.GetNikeOTP = async(api_key,id)=>
+exports.GetNikeOTP = async(id)=>
 {
     var config = {
     method: 'get',
-    url: 'https://api.sms-activate.org/stubs/handler_api.php?api_key='+await api_key+'&action=getStatus&id='+await id,
+    url: 'https://api.sms-activate.org/stubs/handler_api.php?api_key='+await this.SMS_api_key+'&action=getStatus&id='+await id,
     headers: { }
     };
 
@@ -254,11 +271,11 @@ exports.GetNikeOTP = async(api_key,id)=>
     });
 
 }
-exports.CancelOTP = async(api_key,id) =>
+exports.CancelOTP = async(id) =>
 {
     var config = {
         method: 'get',
-        url: 'https://api.sms-activate.org/stubs/handler_api.php?api_key='+await api_key+'&action=setStatus&status=8&id='+await id,
+        url: 'https://api.sms-activate.org/stubs/handler_api.php?api_key='+await this.SMS_api_key+'&action=setStatus&status=8&id='+await id,
         headers: { }
       };
       

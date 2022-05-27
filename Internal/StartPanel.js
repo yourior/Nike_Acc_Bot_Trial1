@@ -5,11 +5,10 @@ const { Cluster } = require('puppeteer-cluster');
 var fs = require('fs').promises;
 // var nameGenerator = require('unique-names-generator');
 var ProfileGenerator = require('random-profile-generator');
-var SMS_Activate = require('./SMS_Activate');
 var EmailDomain = '@gmail.com';
 var emailVal = 'TesterEmail' + '.' + (Math.floor((Math.random() * 9000) + 1000)).toString() + '@gmail.com';
 
-var OTP_API = '88862e0e304d3e6dce193d1771ffb5A5';
+// var OTP_API = '88862e0e304d3e6dce193d1771ffb5A5';
 var OTP_Region_Code = '10';
 var passwordVal = 'Alkaline@tester123';
 var fNameVal ;
@@ -19,15 +18,14 @@ var bDayVal = '01/05/19'+(Math.floor((Math.random() * (99-55)) + 55)).toString()
 var proxyUrl = null;
 var proxyUser = null; //If proxy username/pass exists insert it here if not leave both variables blank
 var proxyPass = null;
-var proxyArray = 1;
-var GenderVal = 'm';
-var BrowserTimeOut = 120000;
+var GenderVal = null;
+// var BrowserTimeOut = 120000;
 
 var RegionVal='Vietnam';
 var NikeWeb = 'https://www.nike.com/';
 var Chrome_Ubuntu = '/usr/bin/google-chrome';
 var Chrome_Windows = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
-var DiscordWebhook_Link = 'https://discord.com/api/webhooks/952973421443153960/_Vl9DMoaUo51C4zPRzyHMx-IKW17VIcGrVSt4CATnS7rEuv9Idp7Q9KTK_T_hgZK-pEX';
+// var DiscordWebhook_Link = 'https://discord.com/api/webhooks/952973421443153960/_Vl9DMoaUo51C4zPRzyHMx-IKW17VIcGrVSt4CATnS7rEuv9Idp7Q9KTK_T_hgZK-pEX';
 exports.Cluster = async(maxConcurrency)=>
 {
   // Create a cluster with 2 workers
@@ -55,7 +53,7 @@ exports.Cluster = async(maxConcurrency)=>
     await cluster.close();
 
 }
-exports.Run = async (browserCount,proxy,CustomPass = null) =>
+exports.Run = async (browserCount,BrowserTimeOut= 120000,proxy,CustomPass = null) =>
 {
   if(CustomPass != null)
   {
@@ -63,7 +61,7 @@ exports.Run = async (browserCount,proxy,CustomPass = null) =>
   }
     try{
   
-      Discord.registerDiscordWebhook(DiscordWebhook_Link);
+      // Discord.registerDiscordWebhook(DiscordWebhook_Link);
       var presentDay = new Date();
       // console.log();
       var year = Math.floor((Math.random()*(presentDay.getFullYear() - 16 - (presentDay.getFullYear()-80 ))) + (presentDay.getFullYear()-80 ));
@@ -102,26 +100,9 @@ exports.Run = async (browserCount,proxy,CustomPass = null) =>
           console.log("ProxyName = "+proxyUser);
           console.log("proxyPass = "+proxyPass);
         }
-        //////
-        // var SMS_Activate_Balance = (await (await SMS_Activate.GetBalance(OTP_API)).data).replace('ACCESS_BALANCE:', '');
-        // var SMS_Activate_Balance = (await (await SMS_Activate.GetBalance(OTP_API)).data);
-        // var SMS_Activate_Phone_Count = await (await SMS_Activate.CountNikePhoneNumber(OTP_API,OTP_Region_Code)).data;
-        // console.log("SMS-Activate Balance : "+SMS_Activate_Balance);
-        // console.log("SMS-Activate Nike Vietnam Phone Count : "+SMS_Activate_Phone_Count.count+" - Cost : "+SMS_Activate_Phone_Count.cost);
-        console.log("Can Create Approximately "+Math.floor(SMS_Activate_Balance/SMS_Activate_Phone_Count.cost)+' Account');
-        console.log("Email : "+emailVal+"\nfname : "+fNameVal+"\nsname : "+sNameVal);
-        console.log("bDayVal (MM/DD/YYY): "+bDayVal);
   
-  
-        if(SMS_Activate_Phone_Count==0)
-        {
-          console.log("not enough phone number on the region");
-        }else{
-          // var Phone = await SMS_Activate.GetNikeNumber(OTP_API, OTP_Region_Code)
-          //   console.log(JSON.stringify(Phone))
-          // console.log("SMS-Activate Balance + Cashback : "+await SMS_Activate.GetBalanceAndCashBack());
           var create = await Browser.Browser(browserCount-1,"Create Account",Chrome_Windows,BrowserTimeOut,proxyUrl,proxyUser,proxyPass,emailVal,passwordVal,fNameVal,sNameVal,bDayVal,
-              GenderVal,OTPProvider='SMS-Activate',OTP_API,OTP_Region_Code);
+              GenderVal,OTPProvider='SMS-Activate');
           if(create.status == true)
           {
   
@@ -133,14 +114,16 @@ exports.Run = async (browserCount,proxy,CustomPass = null) =>
             fs.appendFile('Accounts.txt', '\n'+userpass, (err) => {  
               if (err) throw err;
               console.log('Added User/Pass To Accounts.txt!');
-              return true;
+              
             });
-            return true;
-          }else{
-            return false;
+            return { status: true};
+          }else if(create.status == false){
+
+            return { status: false, data : await create.data};
           }
           //save to .txt file
-        }
+        
+
     }catch(err)
     {
       console.error("StartPanel Error Log : "+err);

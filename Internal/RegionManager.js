@@ -1,19 +1,23 @@
-exports.getRegion = async(code) =>
+
+var json;
+exports.SetRegion = async(code) =>
 {
-    var json;
+    // var json;
     switch(code)
     {
         case "vn":
-            json = {
+            this.json = {
                 SmsActivate_Region_Code : 10,
-                NikeWeb_Locaion : '#gen-nav-footer > nav > div > div > div:nth-child(3) > div > a:nth-child(16)'
+                NikeWeb_Location : '#gen-nav-footer > nav > div > div > div:nth-child(3) > div > a:nth-child(16)',
+                Phone_Prefix_Length : 2
             }
             console.log("Region Picked Vietnam");
             break;
         case "my":
-            json = {
+            this.json = {
                 SmsActivate_Region_Code : 7,
-                NikeWeb_Locaion : '#gen-nav-footer > nav > div > div > div:nth-child(3) > div > a:nth-child(9)'
+                NikeWeb_Location : '#gen-nav-footer > nav > div > div > div:nth-child(3) > div > a:nth-child(9)',
+                Phone_Prefix_Length : 2
             }
             console.log("Region Picked Malaysia");
             break;
@@ -23,3 +27,7 @@ exports.getRegion = async(code) =>
     }
     return await json ;
 } 
+exports.GetRegion = async() =>
+{
+    return await this.json;
+}

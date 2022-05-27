@@ -8,7 +8,7 @@ puppeteer.use(AdblockerPlugin({ blockTrackers: true }))
 
 const {Create }= require('./Bot');
 exports.Browser = async (count,Module,Chrome,BrowserTimeOut=120000,proxyUrl=null,proxyUser=null,proxyPass=null,emailVal,passwordVal,fNameVal=null,sNameVal=null,bDayVal=null,
-    GenderVal=null,OTPProvider=null,OTP_API=null,OTP_Region_Code=null) => {
+    GenderVal=null,OTPProvider=null) => {
     // console.log("Generating Browser");
     // var Chrome = Chrome_Ubuntu;
     // var Chrome = Chrome_Windows;
@@ -118,7 +118,9 @@ exports.Browser = async (count,Module,Chrome,BrowserTimeOut=120000,proxyUrl=null
         }
         proxyUrl = "LocalHost"
       }
-      console.log("Proxy Used : "+proxyUrl);
+
+      console.log("Proxy Used : "+await roxyUrl);
+
       try {
 
         await page.setDefaultNavigationTimeout(BrowserTimeOut);
@@ -127,7 +129,7 @@ exports.Browser = async (count,Module,Chrome,BrowserTimeOut=120000,proxyUrl=null
         var task ;
         if(Module == "Create Account")
         {
-          task = await Create(page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayVal,GenderVal,OTPProvider,OTP_API,OTP_Region_Code);
+          task = await Create(page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayVal,GenderVal,OTPProvider);
           if(task.status == true)
             {
               browser.close();
@@ -150,8 +152,12 @@ exports.Browser = async (count,Module,Chrome,BrowserTimeOut=120000,proxyUrl=null
                   status : false,
                 }
                   //replay
-              }else{
-                
+              }else if(task.data == "NO_NUMBERS" || task.data == "NO_BALANCE"){
+                browser.close();
+                return {
+                  status : false,
+                  data : await task.data
+                }
               }
             }
         }else if(Module == "Reverify_Phone")
@@ -177,7 +183,6 @@ exports.Browser = async (count,Module,Chrome,BrowserTimeOut=120000,proxyUrl=null
         console.error("Browser Error Log : "+err);
         console.log("Closing browser");
         browser.close();
-        // process.exit();
         return {
           status : false,
         }
