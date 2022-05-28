@@ -29,5 +29,9 @@ exports.SetRegion = async(code) =>
 } 
 exports.GetRegion = async() =>
 {
+    console.log("GetRegion : "+JSON.stringify(this.json));
+    // console.log("GetRegion : "+this.json.);
+    // console.log("GetRegion : "+JSON.stringify(this.json));
+    // console.log("GetRegion : "+JSON.stringify(this.json));
     return await this.json;
 }

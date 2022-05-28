@@ -130,6 +130,7 @@ function end() {
         {
             CustomPassword = "DefaultP@ssw0rd";
         }
+        await Region.GetRegion();
         var result = await RunBot.Run(BrowserCount,120000,proxy_run,CustomPassword);
         if(result.status)
         {

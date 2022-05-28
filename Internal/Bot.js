@@ -27,6 +27,7 @@ var themessage;
 // var phoneNum;
 // var userpass;
 // var RegionVal='Vietnam';
+var Region = require('./RegionManager');
 var NikeWeb = 'https://www.nike.com/';
 // var Chrome_Ubuntu = '/usr/bin/google-chrome';
 // var Chrome_Windows = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
@@ -38,7 +39,7 @@ var Dashboard_Signup_2 = '#\\39 a519619-fe20-4cc4-943f-3c70a8e36fe1 > div > div 
 var Region_Signup = '#\\34 192d36c-1096-47c7-8637-dd56783efd1b';
 var Email_Signup = '#f0735cfc-e551-49c2-8fb3-436310735e57';
 var Dasboard_RegionPicker = '#gen-nav-footer > footer > div > div.l-sub-footer.ncss-row > div.ncss-col-sm-12.ncss-col-md-6.pt3-sm.pl5-sm.pl2-md > div > a';
-var Dashboard_RegionPicker_VN = '#gen-nav-footer > nav > div > div > div:nth-child(3) > div > a:nth-child(16)';
+// var Dashboard_RegionPicker_Country = await Region.GetRegion().NikeWeb_Location;
 var ProfileClick = '#gen-nav-commerce-header-v2 > div.pre-l-header-container > header > div > div.pre-l-wrapper.mauto-sm.d-sm-flx > div.pre-l-nav-box.flx-gro-sm-1 > nav > div.pre-mobilemenu.d-sm-ib.d-lg-h.z2.pre-show > div.pre-panel.pre-panel-root > button.nav-btn.p0-sm.pre-link.pre-account-link > div > div';
 var ProfileClick_step2 ='#gen-nav-commerce-header-v2 > div.pre-l-header-container > header > div > div.pre-l-wrapper.mauto-sm.d-sm-flx > div.pre-l-nav-box.flx-gro-sm-1 > nav > div.pre-mobilemenu.d-sm-ib.d-lg-h.z2.pre-show > div.pre-panel.pre-my-account-panel > a:nth-child(8)';
 var ProfileClick_step3 = '#settings > div.css-5d5ho6 > div.ncss-headline-lg-brand.ncss-col-sm-12.ncss-col-lg-4.pb8-sm.pr6-lg.pl0-sm.va-sm-t.css-bdqskz > div:nth-child(1) > div';
@@ -182,12 +183,15 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         await delay(2000);
         ////////////////////////////////
         //Get Region 
-        console.log("Get Region Vietnam");
-        await page.waitForSelector(Dashboard_RegionPicker_VN,{visible: true, hidden: false});
-        await cursor.move(Dashboard_RegionPicker_VN);
-        await page.focus(Dashboard_RegionPicker_VN);
+        console.log("Get Region");
+        console.log(await Region.GetRegion().NikeWeb_Location);//PROBLEM
+        var Dashboard_RegionPicker_Country = await Region.GetRegion();
+        console.log(JSON.stringify(Dashboard_RegionPicker_Country));
+        await page.waitForSelector(Dashboard_RegionPicker_Country.NikeWeb_Location,{visible: true, hidden: false});
+        await cursor.move(Dashboard_RegionPicker_Country.NikeWeb_Location);
+        await page.focus(Dashboard_RegionPicker_Country.NikeWeb_Location);
         await cursor.click();
-        console.log("Region Vietnam Found");
+        console.log("Region Found");
         //////////
         var Rando_Delay;
         console.log("Looking for register Button (1)");

@@ -185,7 +185,7 @@ exports.GetNikeNumber = async() =>
             // var initial = '+84';
             // // phone[0] = initial;
             var final_phone = "";
-            for(var i= await RegionManager.SetRegion().Phone_Prefix_Length ;i<phone.length; i++)//vn
+            for(var i= await RegionManager.GetRegion().Phone_Prefix_Length ;i<phone.length; i++)//vn
             {
                 console.log("process "+i+" result : "+final_phone);
                 final_phone = final_phone.concat(phone[i]);
