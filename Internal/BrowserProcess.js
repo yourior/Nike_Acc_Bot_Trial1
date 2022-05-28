@@ -8,27 +8,17 @@ puppeteer.use(AdblockerPlugin({ blockTrackers: true }))
 
 const {Create }= require('./Bot');
 exports.Browser = async (count,Module,Chrome,BrowserTimeOut=120000,proxyUrl=null,proxyUser=null,proxyPass=null,emailVal,passwordVal,fNameVal=null,sNameVal=null,bDayVal=null,
-    GenderVal=null,OTPProvider=null) => {
-    // console.log("Generating Browser");
-    // var Chrome = Chrome_Ubuntu;
-    // var Chrome = Chrome_Windows;
-    if(OTPProvider!=null && OTP_API== null && OTP_Region_Code==null)
-    {
-        console.log("OTP API is NULL");
-        return false;
-    }else if(OTPProvider==null)
-    {
-        OTP_API = null;
-    }
+    GenderVal=null) => {
+
       attempt=0;
       var browser;
       
       attempt++;
       isSuccess=false;
       // var page;
-      if(proxyUrl != null)
+      if(await proxyUrl != null)
       {
-        
+        console.log("Proxy used : "+await proxyUrl+":"+await proxyUser+":"+await proxyPass);
             // const page = await browser.newPage();
         browser = await puppeteer.launch({
             args: [
@@ -51,7 +41,7 @@ exports.Browser = async (count,Module,Chrome,BrowserTimeOut=120000,proxyUrl=null
               '--window-size=1920x1080',
               // '--disable-extensions',
               // '--disable-blink-features=AutomationControlled',
-              '--proxy-server=http://'+proxyUrl
+              '--proxy-server=http://'+await proxyUrl
             ], 
             headless: false, 
             // slowMo: 150,
@@ -70,13 +60,14 @@ exports.Browser = async (count,Module,Chrome,BrowserTimeOut=120000,proxyUrl=null
         cursor = createCursor(page);
 
         if(proxyUser != null &&proxyPass != null){
-          console.log("authenticating proxy user/pass");
+          console.log("authenticating User : "+await proxyUser+" - Pass : "+await proxyPass);
           await page.authenticate({ 
-            username: proxyUser, 
-            password: proxyPass 
+            username: await proxyUser, 
+            password: await proxyPass 
           });
         }
       }else{
+        console.log("Proxy used : LocalHost");
         browser = await puppeteer.launch(
           { 
               // devtools: true,
@@ -119,7 +110,7 @@ exports.Browser = async (count,Module,Chrome,BrowserTimeOut=120000,proxyUrl=null
         proxyUrl = "LocalHost"
       }
 
-      console.log("Proxy Used : "+await roxyUrl);
+      console.log("Proxy Used : "+await proxyUrl);
 
       try {
 
@@ -129,7 +120,7 @@ exports.Browser = async (count,Module,Chrome,BrowserTimeOut=120000,proxyUrl=null
         var task ;
         if(Module == "Create Account")
         {
-          task = await Create(page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayVal,GenderVal,OTPProvider);
+          task = await Create(page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayVal,GenderVal);
           if(task.status == true)
             {
               browser.close();

@@ -125,6 +125,7 @@ exports.GetBalanceAndCashBack = async() =>
 exports.CountNikePhoneNumber = async() =>
 {
     console.log("CountNikePhoneNumber : "+await this.SMS_api_key+" - "+await this.SMS_country_code);
+    var country_code = await this.SMS_country_code;
     var config = {
         method: 'get',
         url: 'https://api.sms-activate.org/stubs/handler_api.php?api_key='+await this.SMS_api_key+'&action=getPrices&service=ew&country='+await this.SMS_country_code,
@@ -133,8 +134,11 @@ exports.CountNikePhoneNumber = async() =>
       
       return await axios(config)
       .then(async function (response) {
-          var data = await response.data[await this.SMS_country_code].ew;
-          console.log(data);
+        //   console.log("Masuk Run");
+        //   console.log("SMS_Activate_Phone_Count : "+ JSON.stringify(await response.data));
+        //   console.log("SMS_Activate_Phone_Count : "+ JSON.stringify(await response.data[await this.SMS_country_code]));
+        //   console.log("SMS_Activate_Phone_Count : "+ JSON.stringify(await response.data[country_code].ew));
+          var data = await response.data[country_code].ew;
         return {
             status : true,
             data : 

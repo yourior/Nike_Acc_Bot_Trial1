@@ -53,8 +53,9 @@ exports.Cluster = async(maxConcurrency)=>
     await cluster.close();
 
 }
-exports.Run = async (browserCount,BrowserTimeOut= 120000,proxy,CustomPass = null) =>
+exports.Run = async (browserCount,BrowserTimeOut= 120000,proxyUrl,CustomPass = null) =>
 {
+  console.log("Start Panel Proxy : "+await proxyUrl);
   if(CustomPass != null)
   {
     passwordVal = CustomPass;
@@ -92,7 +93,7 @@ exports.Run = async (browserCount,BrowserTimeOut= 120000,proxy,CustomPass = null
         /// Need Bday generator
         if(proxyUrl!=null)
         {
-          var Proxy_Array = proxy.split(":");
+          var Proxy_Array = proxyUrl.split(":");
           proxyUrl = Proxy_Array[0]+":"+Proxy_Array[1];
           proxyUser = Proxy_Array[2];
           proxyPass = Proxy_Array[3];
@@ -117,7 +118,7 @@ exports.Run = async (browserCount,BrowserTimeOut= 120000,proxy,CustomPass = null
               
             });
             return { status: true};
-          }else if(create.status == false){
+          }else if(await create.status == false){
 
             return { status: false, data : await create.data};
           }

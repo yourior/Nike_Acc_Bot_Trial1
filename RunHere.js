@@ -26,7 +26,7 @@ function end() {
 
     var ProxyLocation 
     
-    var SettingLocation = readlineSync.question('Setting File Location? (if using localhost, just skip it) : ');
+    var SettingLocation = readlineSync.question('Setting File Location? : ');
     if(SettingLocation == null)
     {
         console.log("Setting Must be registered");
@@ -47,9 +47,12 @@ function end() {
                 ProxyLocation = await Proxy(await SettingLocation.ProxyLocation);
             }catch(err)
             {
-                console.log("System can;t find it , Please Input Manually");
+                console.log("System can't find it , Please Input Manually");
                 ProxyLocation = readlineSync.question('Setting Proxy Location? (if using localhost, just skip it) : ');
-                ProxyLocation = await Proxy(await ProxyLocation);
+                if(ProxyLocation != null)
+                {
+                    ProxyLocation = await Proxy(await ProxyLocation);
+                }
             }
         }else{
             ProxyLocation = null
@@ -67,10 +70,11 @@ function end() {
             console.log("Test GetSMSActivate : "+JSON.stringify(await SMS_Activate.GetSMSActivate()));
             var SMS_Activate_Balance = (await (await SMS_Activate.GetBalance()).data);
             console.log("SMS-Activate Balance : "+await SMS_Activate_Balance);
-            var SMS_Activate_Phone_Count = await SMS_Activate.CountNikePhoneNumber();console.log("SMS_Activate_Phone_Count : " +await SMS_Activate_Phone_Count);
-            SMS_Activate_Phone_Count = await (await SMS_Activate.CountNikePhoneNumber()).data;
+            // var SMS_Activate_Phone_Count = await SMS_Activate.CountNikePhoneNumber();
+            var SMS_Activate_Phone_Count = await (await SMS_Activate.CountNikePhoneNumber()).data;
+            console.log("SMS_Activate_Phone_Count : " +await SMS_Activate_Phone_Count.count);
 
-            console.log("SMS-Activate Nike ( "+RegionQ+" ) Phone Count : "+await SMS_Activate_Phone_Count.count+" - Cost : "+await SMS_Activate_Phone_Count.cost);
+            console.log("SMS-Activate Nike ( "+await SettingLocation.RegionCode+" ) Phone Count : "+await SMS_Activate_Phone_Count.count+" - Cost : "+await SMS_Activate_Phone_Count.cost);
             var Approx = Math.floor(await SMS_Activate_Balance/await SMS_Activate_Phone_Count.cost);
             console.log("Can Create Approximately "+Approx+' Account');
 
@@ -122,7 +126,11 @@ function end() {
         }
         attempt++;
         console.log("Running Acc Gen");
-        var result = await RunBot.Run(BrowserCount,proxy_run,CustomPassword);
+        if(CustomPassword == null)
+        {
+            CustomPassword = "DefaultP@ssw0rd";
+        }
+        var result = await RunBot.Run(BrowserCount,120000,proxy_run,CustomPassword);
         if(result.status)
         {
             acc_gen++;
