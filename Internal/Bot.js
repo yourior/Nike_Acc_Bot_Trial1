@@ -513,9 +513,10 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         // Rando_Delay = Math.floor(Math.random() * 100) + 50;
         // await page.type(AddNumber, phoneSMS_Activate.phone, { delay: Rando_Delay });
 
-        console.log("Phone Number is Given");
+        console.log("Phone Number is Given : "+await phoneSMS_Activate.data.phone);
         console.log("Filling Phone Number");
         Rando_Delay = Math.floor(Math.random() * 100) + 50;
+        // console.log("Phone")
         await page.type(phone,await phoneSMS_Activate.data.phone, { delay: Rando_Delay });
         console.log("Entered Phone Number");
         console.log("Looking for Send OTP Button");
@@ -567,22 +568,24 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
             }
           }else{
 
-            console.log("OTP is given");
+            console.log("OTP is given : "+await OTP.data);
           }
           //
         }
         console.log("Filling OTP");
         Rando_Delay = Math.floor(Math.random() * 100) + 50;
-        await page.type(enterTheValue, OTP.data, { delay: Rando_Delay });
+        await page.type(enterTheValue,await OTP.data, { delay: Rando_Delay });
 
         console.log("Looking for Agree Button");
-        await page.waitForSelector(AgreeButtonOTP);
+        await page.waitForSelector(AgreeButtonOTP);//need to be respecify
         await cursor.move(AgreeButtonOTP);
         await page.focus(AgreeButtonOTP);
         await cursor.click();
         console.log("it is agreed");
         console.log("Looking for Accept Button");
         await page.waitForSelector(storedSubmit);
+        console.log("giving 20 second time to manualy check")
+        await sleep(20000);
         await cursor.move(storedSubmit);
         await page.focus(storedSubmit);
         await cursor.click();

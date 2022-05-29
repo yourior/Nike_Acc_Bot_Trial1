@@ -113,7 +113,11 @@ exports.Browser = async (count,Module,Chrome,BrowserTimeOut=120000,proxyUrl=null
   console.log("Proxy Used : "+await proxyUrl);
 
   try {
-
+    await await page.setRequestInterception(true);
+    await page.on('request', request => {
+      if (request.resourceType() === 'image') request.abort();
+      else request.continue();
+    });
     await page.setDefaultNavigationTimeout(BrowserTimeOut);
     cursor = createCursor(page);
     // task
@@ -148,6 +152,11 @@ exports.Browser = async (count,Module,Chrome,BrowserTimeOut=120000,proxyUrl=null
             return {
               status : false,
               data : await task.data
+            }
+          }else{
+            browser.close();
+            return {
+              status : false
             }
           }
         }

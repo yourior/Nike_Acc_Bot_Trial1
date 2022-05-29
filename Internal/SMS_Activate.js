@@ -166,7 +166,7 @@ exports.GetNikeNumber = async() =>
         url: 'https://sms-activate.org/stubs/handler_api.php?api_key='+await this.SMS_api_key+'&action=getNumber&service=ew&country='+await this.SMS_country_code,
         headers: { }
       };
-      
+      result = await RegionManager.GetRegion();
       return await axios(config)
       .then(async function (response) {
         var data = (JSON.stringify(await response.data));
@@ -185,7 +185,7 @@ exports.GetNikeNumber = async() =>
             // var initial = '+84';
             // // phone[0] = initial;
             var final_phone = "";
-            for(var i= await RegionManager.GetRegion().Phone_Prefix_Length ;i<phone.length; i++)//vn
+            for(var i= await result.Phone_Prefix_Length ;i<phone.length; i++)//vn
             {
                 console.log("process "+i+" result : "+final_phone);
                 final_phone = final_phone.concat(phone[i]);

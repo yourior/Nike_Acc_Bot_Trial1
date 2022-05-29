@@ -64,10 +64,11 @@ function end() {
             process.exit();
         }else{
             var result = await Region.SetRegion(await SettingLocation.RegionCode);
-            console.log("Test Region : "+JSON.stringify(await Region.GetRegion()))
+            // console.log("Test Region : "+JSON.stringify(await Region.GetRegion()))
             result = await Region.GetRegion();
             await SMS_Activate.SetSMSActivate(await SettingLocation.SMS_Activate_API, await result.SmsActivate_Region_Code);
-            console.log("Test GetSMSActivate : "+JSON.stringify(await SMS_Activate.GetSMSActivate()));
+            // console.log("Test Number : "+JSON.stringify(SMS_Activate.GetNikeNumber()));
+            // console.log("Test GetSMSActivate : "+JSON.stringify(await SMS_Activate.GetSMSActivate()));
             var SMS_Activate_Balance = (await (await SMS_Activate.GetBalance()).data);
             console.log("SMS-Activate Balance : "+await SMS_Activate_Balance);
             // var SMS_Activate_Phone_Count = await SMS_Activate.CountNikePhoneNumber();
