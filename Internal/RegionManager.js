@@ -7,6 +7,7 @@ exports.SetRegion = async(code) =>
     {
         case "vn":
             this.json = {
+                Region_Code : "VN",
                 SmsActivate_Region_Code : 10,
                 NikeWeb_Location : '#gen-nav-footer > nav > div > div > div:nth-child(3) > div > a:nth-child(16)',
                 Phone_Prefix_Length : 2
@@ -15,6 +16,7 @@ exports.SetRegion = async(code) =>
             break;
         case "my":
             this.json = {
+                Region_Code : "MY",
                 SmsActivate_Region_Code : 7,
                 NikeWeb_Location : '#gen-nav-footer > nav > div > div > div:nth-child(3) > div > a:nth-child(9)',
                 Phone_Prefix_Length : 2

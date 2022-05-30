@@ -49,9 +49,12 @@ function end() {
             {
                 console.log("System can't find it , Please Input Manually");
                 ProxyLocation = readlineSync.question('Setting Proxy Location? (if using localhost, just skip it) : ');
-                if(ProxyLocation != null)
+                console.log("Location Result : "+await ProxyLocation);
+                if(ProxyLocation.includes(".txt"))
                 {
                     ProxyLocation = await Proxy(await ProxyLocation);
+                }else{
+                    ProxyLocation = null
                 }
             }
         }else{
@@ -73,7 +76,7 @@ function end() {
             console.log("SMS-Activate Balance : "+await SMS_Activate_Balance);
             // var SMS_Activate_Phone_Count = await SMS_Activate.CountNikePhoneNumber();
             var SMS_Activate_Phone_Count = await (await SMS_Activate.CountNikePhoneNumber()).data;
-            console.log("SMS_Activate_Phone_Count : " +await SMS_Activate_Phone_Count.count);
+            // console.log("SMS_Activate_Phone_Count : " +await SMS_Activate_Phone_Count.count);
 
             console.log("SMS-Activate Nike ( "+await SettingLocation.RegionCode+" ) Phone Count : "+await SMS_Activate_Phone_Count.count+" - Cost : "+await SMS_Activate_Phone_Count.cost);
             var Approx = Math.floor(await SMS_Activate_Balance/await SMS_Activate_Phone_Count.cost);
@@ -95,9 +98,6 @@ function end() {
     var CustomPassword = readlineSync.question('Input Custom Password (if there is any) : ');
     var TotalAttempt = readlineSync.question('Total Attempt : ');
     console.log(TotalAccGen+" "+CustomPassword+" "+TotalAttempt);
-
-    
-
     
     var attempt=0;acc_gen=0,errorcount=0,attempt=0,proxy_run=null,BrowserCount=1;
 
@@ -114,40 +114,48 @@ function end() {
     //     // process.exit();
     //     break;
     // }
+    if(ProxyLocation != null)
+    {
+        console.log("Proxy Count : "+ ProxyLocation.length);
+    }
     start();
     while(TotalAccGen>acc_gen && TotalAttempt>=attempt)
     {
-
-        console.log("Proxy Count : "+ ProxyLocation.length);
-        console.log("Final Status : \n Total Acc Gen/Target Acc Gen/Attempt : "+await acc_gen+"/"+TotalAccGen+"/"+attempt);
-        if(ProxyLocation!=null)
-        {
-            proxy_run = ProxyLocation[attempt%ProxyLocation.length];
-            console.log(proxy_run);
-        }
-        attempt++;
-        console.log("Running Acc Gen");
-        if(CustomPassword == null)
-        {
-            CustomPassword = "DefaultP@ssw0rd";
-        }
-        await Region.GetRegion();
-        var result = await RunBot.Run(BrowserCount,120000,proxy_run,CustomPassword);
-        if(result.status)
-        {
-            acc_gen++;
-        }else {
-            if(await result.data == "NO_NUMBERS" || await result.data == "NO_BALANCE")
+        try{
+            console.log("Status : \n Total Acc Gen/Target Acc Gen/Attempt : "+await acc_gen+"/"+TotalAccGen+"/"+attempt);
+            if(ProxyLocation!=null)
             {
-                break;
-            }else{
-                errorcount++;
+                proxy_run = ProxyLocation[attempt%ProxyLocation.length];
+                console.log(proxy_run);
             }
+            attempt++;
+            console.log("Running Acc Gen");
+            if(CustomPassword == null)
+            {
+                CustomPassword = "DefaultP@ssw0rd";
+            }
+            await Region.GetRegion();
+            var result = await RunBot.Run(BrowserCount,120000,proxy_run,CustomPassword);
+            if(result.status)
+            {
+                acc_gen++;
+            }else {
+                if(await result.data == "NO_NUMBERS" || await result.data == "NO_BALANCE")
+                {
+                    break;
+                }else{
+                    errorcount++;
+                }
+            }
+        }catch(err)
+        {
+            console.log("RunHere Error Log : "+ err);
+            errorcount++;
         }
     }
     console.log("Final Status : \n Total Acc Gen/Target Acc Gen : "+await acc_gen+"/"+TotalAccGen);
-    console.log("Final Status : \n Total Acc Gen/Attempt : "+await acc_gen+"/"+TotalAttempt+" Percentage : "+((acc_gen/TotalAttempt)*100));
-    console.log("Final Status : \n Total Error/Attempt : "+await errorcount+"/"+TotalAttempt+" Percentage : "+((errorcount/TotalAttempt)*100));
+    console.log("Final Status : \n Total Acc Gen/Attempt : "+await acc_gen+"/"+attempt+" Percentage : "+((acc_gen/attempt)*100));
+    console.log("Final Status : \n Total Error/Attempt : "+await errorcount+"/"+attempt+" Percentage : "+((errorcount/attempt)*100));
     end();
     process.exit();
 })();

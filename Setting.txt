@@ -1,4 +1,4 @@
-Proxy_Location = D:\GitHubProject\Nike_Acc_Bot_Trial1\Proxy.txt
+Proxy_Location = 
 SMS_Activate_API = 88862e0e304d3e6dce193d1771ffb5A5
 Region = my
 DiscordWebhook_Link =https://discord.com/api/webhooks/952973421443153960/_Vl9DMoaUo51C4zPRzyHMx-IKW17VIcGrVSt4CATnS7rEuv9Idp7Q9KTK_T_hgZK-pEX

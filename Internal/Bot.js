@@ -612,12 +612,12 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
           totalBytes += entry.text.length;
           for (var range of entry.ranges) usedBytes += range.end - range.start - 1;
         }
-        console.log(`Bytes used: ${(usedBytes / totalBytes) * 100}%`);
+        console.log(`Bytes used: ${usedBytes} Total Bytes used: ${totalBytes} Percentage : ${(usedBytes / totalBytes) * 100}%`);
         var json = {
           status : true,
           Email : await emailVal,
           Pass : await passwordVal,
-          Region : "VN",
+          Region : await (await Region.GetRegion()).Region_Code,
           Phone : await phoneSMS_Activate.data.original_phone
         }
         console.log(JSON.stringify(json));
@@ -636,7 +636,7 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         totalBytes += entry.text.length;
         for (var range of entry.ranges) usedBytes += range.end - range.start - 1;
       }
-      console.log(`Until Error - Bytes used: ${(usedBytes / totalBytes) * 100}%`);
+      console.log(`Until Error - Bytes used: ${usedBytes} Total Bytes used: ${totalBytes} Percentage : ${(usedBytes / totalBytes) * 100}%`);
 
       console.error("Create Account Error Log : "+err);
       var statsReturn;
