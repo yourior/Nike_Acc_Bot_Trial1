@@ -153,9 +153,17 @@ function end() {
             errorcount++;
         }
     }
-    console.log("Final Status : \n Total Acc Gen/Target Acc Gen : "+await acc_gen+"/"+TotalAccGen);
-    console.log("Final Status : \n Total Acc Gen/Attempt : "+await acc_gen+"/"+attempt+" Percentage : "+((acc_gen/attempt)*100));
-    console.log("Final Status : \n Total Error/Attempt : "+await errorcount+"/"+attempt+" Percentage : "+((errorcount/attempt)*100));
+    // process.on('exit',async() => {
+    //     // console.log("process.exit() method is fired")
+        console.log("Final Status : \n Total Acc Gen/Target Acc Gen : "+await acc_gen+"/"+TotalAccGen);
+        console.log("Final Status : \n Total Acc Gen/Attempt : "+await acc_gen+"/"+attempt+" Percentage : "+((acc_gen/attempt)*100));
+        console.log("Final Status : \n Total Error/Attempt : "+await errorcount+"/"+attempt+" Percentage : "+((errorcount/attempt)*100));
+    // })
+    process.on('SIGINT', async() =>{
+        console.log("Final Status : \n Total Acc Gen/Target Acc Gen : "+await acc_gen+"/"+TotalAccGen);
+        console.log("Final Status : \n Total Acc Gen/Attempt : "+await acc_gen+"/"+attempt+" Percentage : "+((acc_gen/attempt)*100));
+        console.log("Final Status : \n Total Error/Attempt : "+await errorcount+"/"+attempt+" Percentage : "+((errorcount/attempt)*100));
+    });
     end();
     process.exit();
 })();

@@ -1,3 +1,4 @@
+// var Discord = require('./DiscordAPI');
 var puppeteer = require('puppeteer-extra');
 // var {TimeoutError} = require('puppeteer/Errors');
 // var SMSActivate = require('sms-activate');
@@ -151,10 +152,6 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
   console.log("The Bot is starting...");
   try{
       cursor = createCursor(page);
-      await Promise.all([
-        page.coverage.startJSCoverage(),
-        page.coverage.startCSSCoverage(),
-      ]);
 
       await installMouseHelper(page);//VIEW MOUSE
       // await page.goto('https://www.nike.com/vn/launch',{waitUntil: 'networkidle2'});
@@ -538,7 +535,7 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         {
            //SMS-Activate
           console.log("Still Waiting for OTP");
-          var OTP;
+          // var OTP;
           var status = false,attempt=0,Chance=5;
           while(!status && Chance>attempt)
           {
@@ -560,8 +557,14 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
             console.log("OTP Verification Problem");
             console.log("Number "+await phoneSMS_Activate.data.phone +" is Cancelled");
             var deleteNum = await SMS.CancelOTP(await phoneSMS_Activate.data.id);
-            if(deleteNum)
+            if(await deleteNum)
             {
+              console.log("Number Deleted");
+              return {
+                status : false
+              }
+            }else{
+              console.log("Delete Number Failed");
               return {
                 status : false
               }
@@ -590,7 +593,8 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         await page.focus(storedSubmit);
         await cursor.click();
         console.log("OTP is given to Nike");
-
+        
+        // await SaveData(emailVal,passwordVal,await phoneSMS_Activate.data.original_phone,OTP,await (await Region.GetRegion()).Region_Code,Proxy);
         console.log("Waiting for Cookies...");
         cookies = await page.cookies();
         // console.log("Reuse Cookies...");
@@ -618,7 +622,10 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
           Email : await emailVal,
           Pass : await passwordVal,
           Region : await (await Region.GetRegion()).Region_Code,
-          Phone : await phoneSMS_Activate.data.original_phone
+          Phone : await phoneSMS_Activate.data.original_phone,
+          OTP : await OTP.data ,
+          Success_bytes : await usedBytes,
+          Total_Success_bytes : await totalBytes,
         }
         console.log(JSON.stringify(json));
         return json;
@@ -647,7 +654,9 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
       }
       return {
         status : false,
-        data : statsReturn
+        data : statsReturn,
+        Failed_bytes : await usedBytes,
+        Total_Failed_bytes : await totalBytes,
       }
     }     
 };

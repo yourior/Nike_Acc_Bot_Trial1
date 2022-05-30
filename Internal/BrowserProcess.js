@@ -15,7 +15,7 @@ exports.Browser = async (count,Module,Chrome,BrowserTimeOut=120000,proxyUrl=null
   
   attempt++;
   isSuccess=false;
-  // var page;
+  var page;
   if(await proxyUrl != null)
   {
     console.log("Proxy used : "+await proxyUrl+":"+await proxyUser+":"+await proxyPass);
@@ -109,6 +109,11 @@ exports.Browser = async (count,Module,Chrome,BrowserTimeOut=120000,proxyUrl=null
     }
     proxyUrl = "LocalHost"
   }
+  
+  await Promise.all([
+    await page.coverage.startJSCoverage(),
+    await page.coverage.startCSSCoverage(),
+  ]);
 
   console.log("Proxy Used : "+await proxyUrl);
 
@@ -127,6 +132,13 @@ exports.Browser = async (count,Module,Chrome,BrowserTimeOut=120000,proxyUrl=null
       task = await Create(page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayVal,GenderVal);
       if(task.status == true)
         {
+          var Success_bytes=null;
+          if(await task.Success_bytes != null && await task.Total_Success_bytes != null)
+          {
+            Success_bytes = await task.Success_bytes+":"+await task.Success_bytes;
+            console.log(Success_bytes);
+          }
+          console.log(Failed_bytes);
           browser.close();
           var json = {
             status : true,
@@ -134,29 +146,44 @@ exports.Browser = async (count,Module,Chrome,BrowserTimeOut=120000,proxyUrl=null
             Pass : await task.Pass,
             Region : await task.Region,
             Phone : await task.Phone,
-            Proxy : await proxyUrl
+            OTP : await task.OTP,
+            Proxy : await proxyUrl,
+            Success_bytes : Success_bytes
           }
+
           console.log(JSON.stringify(json));
           return json;
+
         }else if(task.status == false){
+          console.log("Closing browser");
+          browser.close();
+          var Failed_bytes = null;
+          if(await task.Failed_bytes != null && await task.Total_Failed_bytes != null)
+          {
+            Failed_bytes = await task.Failed_bytes+":"+await task.Total_Failed_bytes;
+            console.log(Failed_bytes);
+          }
           if(await task.data == "TimeoutError")
           {
-            console.log("Closing browser");
-            browser.close();
+            
+            // browser.close();
             return {
               status : false,
+              Failed_bytes : await Failed_bytes
             }
               //replay
           }else if(task.data == "NO_NUMBERS" || task.data == "NO_BALANCE"){
-            browser.close();
+            // browser.close();
             return {
               status : false,
-              data : await task.data
+              data : await task.data,
+              Failed_bytes : await Failed_bytes
             }
           }else{
-            browser.close();
+            // browser.close();
             return {
-              status : false
+              status : false,
+              Failed_bytes : await Failed_bytes
             }
           }
         }
@@ -180,11 +207,25 @@ exports.Browser = async (count,Module,Chrome,BrowserTimeOut=120000,proxyUrl=null
         }
   }catch(err)
   {
+    var [jsCoverage, cssCoverage] = await Promise.all([
+      page.coverage.stopJSCoverage(),
+      page.coverage.stopCSSCoverage(),
+    ]);
+    let totalBytes = 0;
+    let usedBytes = 0;
+    var coverage = [...jsCoverage, ...cssCoverage];
+    for (var entry of coverage) {
+      totalBytes += entry.text.length;
+      for (var range of entry.ranges) usedBytes += range.end - range.start - 1;
+    }
+    console.log(`Until Error Browser - Bytes used: ${usedBytes} Total Bytes used: ${totalBytes} Percentage : ${(usedBytes / totalBytes) * 100}%`);
+
     console.error("Browser Error Log : "+err);
     console.log("Closing browser");
     browser.close();
     return {
       status : false,
+      Failed_bytes : await usedBytes+":"+await totalBytes
     }
   }
 }

@@ -104,24 +104,19 @@ exports.Run = async (browserCount,BrowserTimeOut= 120000,proxyUrl,CustomPass = n
   
           var create = await Browser.Browser(browserCount-1,"Create Account",Chrome_Windows,BrowserTimeOut,proxyUrl,proxyUser,proxyPass,emailVal,passwordVal,fNameVal,sNameVal,bDayVal,
               GenderVal,OTPProvider='SMS-Activate');
+          console.log("Test Log : "+JSON.stringify(create));
           if(create.status == true)
           {
-  
+          
             console.log("Account Created");
-            Discord.DiscordWebhook(await create.Proxy,await create.Email,await create.Pass,await create.Region,await create.Phone);
-            
-            var userpass = (emailVal + ":" + passwordVal);
-  
-            fs.appendFile('Accounts.txt', '\n'+userpass, (err) => {  
-              if (err) throw err;
-              console.log('Added User/Pass To Accounts.txt!');
-              
-            });
+            SaveData(await create.Email,await create.Pass,await create.Phone,await create.OTP ,await create.Region,await create.Proxy);
             return { status: true};
+          
           }else if(await create.status == false){
 
             return { status: false, data : await create.data};
           }
+          CountData(await create.Success_bytes,await create.Failed_bytes);
           //save to .txt file
         
 
@@ -130,5 +125,81 @@ exports.Run = async (browserCount,BrowserTimeOut= 120000,proxyUrl,CustomPass = n
       console.error("StartPanel Error Log : "+err);
       return false;
     }
+    // process.on('exit',() => {
+
+    //   CountData(null,Failed_bytes);
+    // });
+}
+async function SaveData(Email,Pass,OriginalPhone,OTP,Region,Proxy)
+{
+  var isSuccess=false;
+  var LoginData = (Email + ":" + Pass);
+  try{
+    let date_ob = new Date();
+    // var LoginData = await Email.concat(":", await Pass);
+    
+    // adjust 0 before single digit date
+    let date = ("0" + date_ob.getDate()).slice(-2);  
+    // current month
+    let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
+    // current year
+    let year = date_ob.getFullYear();
+
+    if(await OriginalPhone != null && await OTP != null && await LoginData != null)
+    {
+      isSuccess = true;
+      console.log("Create Account Successful");
+      Discord.DiscordWebhook(await Proxy,await Email,await Pass,await Region,await OriginalPhone,await OTP);
+              
+      fs.appendFile('Accounts_'+date+'_'+month+'_'+year+'.txt', '\n'+LoginData, (err) => {  
+        if (err) throw err;
+          console.log('Added User/Pass To Accounts.txt!');
+        }
+      );
+    }else{
+      isSuccess = false;
+      console.log("Create Account Failed");
+    }
+  }catch(err){
+    if(isSuccess)
+    {
+      console.log("While Error : "+LoginData+" Account Successfully Created");
+    }
+    console.log("SaveData Error Log : "+err);
+  }
+}
+async function CountData(Success_bytes,Failed_bytes)
+{
+  try{
+    var Success_Text = null,Failed_Text = null;
+    let date_ob = new Date();
+    // var LoginData = await Email.concat(":", await Pass);
+    // adjust 0 before single digit date
+    let date = ("0" + date_ob.getDate()).slice(-2);
   
+    // current month
+    let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
+  
+    // current year
+    let year = date_ob.getFullYear();
+    if(Success_bytes!= null)
+    {
+      Success_Text = "\nSuccess bytes: "+await Success_bytes;
+    }
+    if(Failed_bytes != null)
+    {
+      Failed_Text = "\nFailed bytes: "+await Failed_bytes;
+    }
+    var Combined_Text = Success_Text + Failed_Text;
+    console.log("Saving Counted Data");
+        // Discord.DiscordWebhook(await Proxy,await Email,await Pass,await Region,await OriginalPhone,await OTP);     
+    fs.appendFile('Data_Used_'+date+'_'+month+'_'+year+'.txt', Combined_Text, (err) => {  
+      if (err) throw err;
+        console.log('Added data used To Data_Used.txt!');
+    });
+
+  }catch(err)
+  {
+    console.log("CountData Error Log : "+err);
+  }
 }
