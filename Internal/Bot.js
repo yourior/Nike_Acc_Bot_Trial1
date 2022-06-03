@@ -25,6 +25,7 @@ var SMS = require('./SMS_Activate');
 // var proxyPass = '';
 // var info;
 var themessage;
+var AgreeButton_Before = '//*[@id="progressiveMobile"]'
 // var phoneNum;
 // var userpass;
 // var RegionVal='Vietnam';
@@ -33,6 +34,8 @@ var NikeWeb = 'https://www.nike.com/';
 // var Chrome_Ubuntu = '/usr/bin/google-chrome';
 // var Chrome_Windows = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 // From Main DashBoard
+var AgreeButton_Missclick1 = '#legalContainer > ul:nth-child(3) > ul > li:nth-child(1) > a';
+var AgreeButton_Missclick2 = '#legalContainer > p:nth-child(5) > strong > a:nth-child(1)';
 var Menu_Option_NONFULL = '#MobileMenuButton';
 var DashBoard_SignUp_NONFULL = '#hf_title_joinus_membership';
 var Dashboard_Signup_1 = '#gen-nav-commerce-header-v2 > div.pre-l-header-container > div.pre-l-brand-header.d-sm-h.d-lg-b.z3 > div > div > div:nth-child(3) > div > a';
@@ -416,7 +419,7 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         console.log("email : "+emailVal+" - pass : "+passwordVal);
 
         //COOKIE
-        console.log("Waiting for Cookies...");
+        console.log("Waiting for Cookies... for log");
         var cookies = await page.cookies();
         console.log("Accepted Cookies...");
         console.log("Saving Cookies...");
@@ -425,9 +428,9 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         /////////////////////////////////
 
         //RELOAD MAIN MENU
-        console.log("Main Menu is Loading");
+        console.log("Waiting for Approval Cookies (Main Menu Logged in)");
         await page.waitForNavigation({ waitUntil: 'networkidle0' });
-        console.log("Main Menu is Loaded");
+        console.log("Approved Cookies");
         //
         
         // GO TO PROFILE
@@ -442,9 +445,9 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         await cursor.move(ProfileClick_step2);
         await cursor.click();
 
-        // console.log("Profile Section is Loading");
-        // await page.waitForNavigation({ waitUntil: 'networkidle0' });
-        // console.log("Profile Section is Loaded");
+        console.log("Waiting for Approval Cookies (Profile Section)");
+        await page.waitForNavigation({ waitUntil: 'networkidle0' });
+        console.log("Approved Cookies");
 
         console.log("Go to Profile Section, Looking for Account Setting Button");
         await page.waitForSelector(ProfileClick_step3,{visible: true, hidden: false});
@@ -452,9 +455,9 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         await cursor.click();
         console.log("Account Setting Found");
 
-        // console.log("Account Setting is Loading");
-        // await page.waitForNavigation({ waitUntil: 'networkidle0' });
-        // console.log("Account Setting is Loaded");
+        console.log("Waiting for Approval Cookies (Account Setting)");
+        await page.waitForNavigation({ waitUntil: 'networkidle0' });
+        console.log("Approved Cookies");
 
         console.log("Looking for Add Phone Number Button");
         await page.waitForSelector(AddNumber,{visible: true, hidden: false});
@@ -587,6 +590,7 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         console.log("it is agreed");
         console.log("Looking for Accept Button");
         await page.waitForSelector(storedSubmit);
+        console.log("checking for missclick")
         console.log("giving 20 second time to manualy check")
         await sleep(20000);
         await cursor.move(storedSubmit);
@@ -595,7 +599,7 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         console.log("OTP is given to Nike");
         
         // await SaveData(emailVal,passwordVal,await phoneSMS_Activate.data.original_phone,OTP,await (await Region.GetRegion()).Region_Code,Proxy);
-        console.log("Waiting for Cookies...");
+        console.log("Waiting for Cookies... for log (Success)");
         cookies = await page.cookies();
         // console.log("Reuse Cookies...");
         // ReuseCookies(page);
