@@ -2,9 +2,9 @@
   "name": "nike-bot",
   "version": "1.0.0",
   "description": "Simple Nike Account Creator",
-  "main": "StartPanel.js",
+  "main": "node RunHere.js",
   "scripts": {
-    "start": "StartPanel.js",
+    "start": "node RunHere.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "YOURIOR",

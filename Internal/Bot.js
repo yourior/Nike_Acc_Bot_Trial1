@@ -146,14 +146,26 @@ function delay(time) {
 }
 async function ReuseCookies(page)
 {
-  var cookiesString = await fs.readFile('./diaoCookies_edited.json');
-  var cookies = JSON.parse(cookiesString);
-  await page.setCookie(...cookies);
+  try{
+
+    var cookiesString = await fs.readFile('./cookiesSuccess.json');
+  
+    var cookies = JSON.parse(cookiesString);
+    await page.setCookie(...cookies);
+    console.log("Reuse Cookie");
+  }catch(err)
+  {
+    console.log("Reuse Cookie Error Log : "+err);
+
+  }
+  
 }
 // var page;
 exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayVal,GenderVal,OTPProvider='SMS-Activate') => {
   console.log("The Bot is starting...");
   try{
+    
+      ReuseCookies(page);
       cursor = createCursor(page);
 
       await installMouseHelper(page);//VIEW MOUSE

@@ -21,6 +21,7 @@ exports.Browser = async (count,Module,Chrome,BrowserTimeOut=120000,proxyUrl=null
     console.log("Proxy used : "+await proxyUrl+":"+await proxyUser+":"+await proxyPass);
         // const page = await browser.newPage();
     browser = await puppeteer.launch({
+      userDataDir: './Log/Temp_Cache.txt',
         args: [
           '--use-gl=egl',
           // '--disable-web-security',
@@ -71,6 +72,7 @@ exports.Browser = async (count,Module,Chrome,BrowserTimeOut=120000,proxyUrl=null
     browser = await puppeteer.launch(
       { 
           // devtools: true,
+          userDataDir: './Log/Temp_Cache.txt',
           executablePath: Chrome,
           args: [
             '--use-gl=egl',
@@ -118,11 +120,11 @@ exports.Browser = async (count,Module,Chrome,BrowserTimeOut=120000,proxyUrl=null
   console.log("Proxy Used : "+await proxyUrl);
 
   try {
-    await await page.setRequestInterception(true);
-    await page.on('request', request => {
-      if (request.resourceType() === 'image') request.abort();
-      else request.continue();
-    });
+    // await await page.setRequestInterception(true);
+    // await page.on('request', request => {
+    //   if (request.resourceType() === 'image') request.abort();
+    //   else request.continue();
+    // });
     await page.setDefaultNavigationTimeout(BrowserTimeOut);
     cursor = createCursor(page);
     // task

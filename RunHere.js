@@ -24,75 +24,78 @@ function end() {
 {
     // var API_Key = readlineSync.question('SMS-Activate API Key : ');
 
-    var ProxyLocation 
+    var ProxyLocation =  "Setting.txt";
     
-    var SettingLocation = readlineSync.question('Setting File Location? : ');
-    if(SettingLocation == null)
+    try{
+        SettingLocation = await Setting(ProxyLocation);
+    }catch(error)
     {
-        console.log("Setting Must be registered");
-        process.exit();
-    }else{
-
-        console.log(SettingLocation);
-        SettingLocation = await Setting(await SettingLocation);
-
-        if(await SettingLocation.ProxyLocation!= null)
+        console.log("Setting Location Log : "+error);
+        console.log("Setting.txt is not found");
+        var SettingLocation = readlineSync.question('Setting File Location? : ');
+        if(SettingLocation == null)
         {
-            // var Proxy2 = readlineSync.question('Setting Proxy Location? (if using localhost, just skip it) : ');
-            // console.log(await SettingLocation.ProxyLocation);
-
-            // ProxyLocation = await Proxy("./"+await SettingLocation.ProxyLocation);
-            try{
-
-                ProxyLocation = await Proxy(await SettingLocation.ProxyLocation);
-            }catch(err)
-            {
-                console.log("System can't find it , Please Input Manually");
-                ProxyLocation = readlineSync.question('Setting Proxy Location? (if using localhost, just skip it) : ');
-                console.log("Location Result : "+await ProxyLocation);
-                if(ProxyLocation.includes(".txt"))
-                {
-                    ProxyLocation = await Proxy(await ProxyLocation);
-                }else{
-                    ProxyLocation = null
-                }
-            }
-        }else{
-            ProxyLocation = null
-        }
-
-        if(await SettingLocation.SMS_Activate_API == null)
-        {
-            console.log("Must Have Phone Number API Key");
+            console.log("Setting Must be registered");
             process.exit();
         }else{
-            var result = await Region.SetRegion(await SettingLocation.RegionCode);
-            // console.log("Test Region : "+JSON.stringify(await Region.GetRegion()))
-            result = await Region.GetRegion();
-            await SMS_Activate.SetSMSActivate(await SettingLocation.SMS_Activate_API, await result.SmsActivate_Region_Code);
-            // console.log("Test Number : "+JSON.stringify(SMS_Activate.GetNikeNumber()));
-            // console.log("Test GetSMSActivate : "+JSON.stringify(await SMS_Activate.GetSMSActivate()));
-            var SMS_Activate_Balance = (await (await SMS_Activate.GetBalance()).data);
-            console.log("SMS-Activate Balance : "+await SMS_Activate_Balance);
-            // var SMS_Activate_Phone_Count = await SMS_Activate.CountNikePhoneNumber();
-            var SMS_Activate_Phone_Count = await (await SMS_Activate.CountNikePhoneNumber()).data;
-            // console.log("SMS_Activate_Phone_Count : " +await SMS_Activate_Phone_Count.count);
-
-            console.log("SMS-Activate Nike ( "+await SettingLocation.RegionCode+" ) Phone Count : "+await SMS_Activate_Phone_Count.count+" - Cost : "+await SMS_Activate_Phone_Count.cost);
-            var Approx = Math.floor(await SMS_Activate_Balance/await SMS_Activate_Phone_Count.cost);
-            console.log("Can Create Approximately "+Approx+' Account');
-
-            if(await SMS_Activate_Phone_Count.count<=0 || Approx<=0)
-            {
-                console.log("No Account can be created");
-                process.exit();
-            }
-        }
-        if(await SettingLocation.DiscordWebhook_Link != null)
-        {
-            Discord.registerDiscordWebhook(await SettingLocation.DiscordWebhook_Link);
+            console.log(SettingLocation);
+            SettingLocation = await Setting(await SettingLocation,false);
         }
     }
+
+    if(await SettingLocation.ProxyLocation!= null)
+    {
+        try{
+
+            ProxyLocation = await Proxy(await SettingLocation.ProxyLocation);
+        }catch(err)
+        {
+            console.log("System can't find it , Please Input Manually");
+            ProxyLocation = readlineSync.question('Setting Proxy Location? (if using localhost, just skip it) : ');
+            console.log("Location Result : "+await ProxyLocation);
+            if(ProxyLocation.includes(".txt"))
+            {
+                ProxyLocation = await Proxy(await ProxyLocation);
+            }else{
+                ProxyLocation = null
+            }
+        }
+    }else{
+        ProxyLocation = null
+    }
+
+    if(await SettingLocation.SMS_Activate_API == null)
+    {
+        console.log("Must Have Phone Number API Key");
+        process.exit();
+    }else{
+        var result = await Region.SetRegion(await SettingLocation.RegionCode);
+        // console.log("Test Region : "+JSON.stringify(await Region.GetRegion()))
+        result = await Region.GetRegion();
+        await SMS_Activate.SetSMSActivate(await SettingLocation.SMS_Activate_API, await result.SmsActivate_Region_Code);
+        // console.log("Test Number : "+JSON.stringify(SMS_Activate.GetNikeNumber()));
+        // console.log("Test GetSMSActivate : "+JSON.stringify(await SMS_Activate.GetSMSActivate()));
+        var SMS_Activate_Balance = (await (await SMS_Activate.GetBalance()).data);
+        console.log("SMS-Activate Balance : "+await SMS_Activate_Balance);
+        // var SMS_Activate_Phone_Count = await SMS_Activate.CountNikePhoneNumber();
+        var SMS_Activate_Phone_Count = await (await SMS_Activate.CountNikePhoneNumber()).data;
+        // console.log("SMS_Activate_Phone_Count : " +await SMS_Activate_Phone_Count.count);
+
+        console.log("SMS-Activate Nike ( "+await SettingLocation.RegionCode+" ) Phone Count : "+await SMS_Activate_Phone_Count.count+" - Cost : "+await SMS_Activate_Phone_Count.cost);
+        var Approx = Math.floor(await SMS_Activate_Balance/await SMS_Activate_Phone_Count.cost);
+        console.log("Can Create Approximately "+Approx+' Account');
+
+        if(await SMS_Activate_Phone_Count.count<=0 || Approx<=0)
+        {
+            console.log("No Account can be created");
+            process.exit();
+        }
+    }
+    if(await SettingLocation.DiscordWebhook_Link != null)
+    {
+        Discord.registerDiscordWebhook(await SettingLocation.DiscordWebhook_Link);
+    }
+   
 
     var TotalAccGen = readlineSync.question('Total Acc Gen : ');
     var CustomPassword = readlineSync.question('Input Custom Password (if there is any) : ');
@@ -101,19 +104,6 @@ function end() {
     
     var attempt=0;acc_gen=0,errorcount=0,attempt=0,proxy_run=null,BrowserCount=1;
 
-    // Check Number
-    
-
-    // SMS_Activate_Balance = (await (await SMS_Activate.GetBalance()).data);
-    // SMS_Activate_Phone_Count = await (await SMS_Activate.CountNikePhoneNumber()).data;
-    // console.log("SMS-Activate Nike ( "+RegionQ+" ) Phone Count : "+await SMS_Activate_Phone_Count.count);
-    // Approx = Math.floor(await SMS_Activate_Balance/await SMS_Activate_Phone_Count.cost);
-    // if(await SMS_Activate_Phone_Count.count<=0 || Approx<=0)
-    // {
-    //     console.log("No Account can be created");
-    //     // process.exit();
-    //     break;
-    // }
     if(ProxyLocation != null)
     {
         console.log("Proxy Count : "+ ProxyLocation.length);
@@ -153,12 +143,10 @@ function end() {
             errorcount++;
         }
     }
-    // process.on('exit',async() => {
-    //     // console.log("process.exit() method is fired")
+
         console.log("Final Status : \n Total Acc Gen/Target Acc Gen : "+await acc_gen+"/"+TotalAccGen);
         console.log("Final Status : \n Total Acc Gen/Attempt : "+await acc_gen+"/"+attempt+" Percentage : "+((acc_gen/attempt)*100));
         console.log("Final Status : \n Total Error/Attempt : "+await errorcount+"/"+attempt+" Percentage : "+((errorcount/attempt)*100));
-    // })
     process.on('SIGINT', async() =>{
         console.log("Final Status : \n Total Acc Gen/Target Acc Gen : "+await acc_gen+"/"+TotalAccGen);
         console.log("Final Status : \n Total Acc Gen/Attempt : "+await acc_gen+"/"+attempt+" Percentage : "+((acc_gen/attempt)*100));
@@ -178,18 +166,22 @@ async function Proxy(Location)
     console.log("Proxy Count : "+Array.length);
     return Array;
 }
-async function Setting(Location)
+async function Setting(Location,isfound = true)
 {
     // Location = Location.trim();
-    var Proxy = fs.readFileSync(Location, 'utf-8');
+    // if(!Location || Location[0] == 'undefined') return;
+
+
+        var Proxy = fs.readFileSync(await Location, 'utf-8');
+    
     var ProxyLocation = null;
     var SMS_Activate_API = null;
     var RegionCode = null;
     var DiscordWebhook_Link = null
 //   var Proxy = JSON.parse(Proxy);
     i=0;
-    var Array = Proxy.split("\n")
-    for(var i =0;i<Array.length;i++)
+    var Array = await Proxy.split("\n")
+    for(var i =0;i<await Array.length;i++)
     {
         // console.log(Array[i]);
         if(await Array[i].includes("Proxy_Location"))
