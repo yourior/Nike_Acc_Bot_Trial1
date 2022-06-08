@@ -14,6 +14,7 @@
     "dates-generator": "^1.0.4",
     "discord-webhook-node": "^1.1.8",
     "ghost-cursor": "^1.1.10",
+    "node-device-detector": "^2.0.2",
     "puppeteer-cluster": "^0.23.0",
     "puppeteer-core": "^14.1.0",
     "puppeteer-extra": "^3.2.3",

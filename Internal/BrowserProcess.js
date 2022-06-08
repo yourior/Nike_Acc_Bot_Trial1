@@ -1,6 +1,8 @@
 const puppeteer = require('puppeteer-extra');
 const { createCursor } = require ("ghost-cursor");
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+var readlineSync = require('readline-sync');
+const DM = require('./DeviceManager');
 // const request = require('request');
 puppeteer.use(StealthPlugin());
 const AdblockerPlugin = require('puppeteer-extra-plugin-adblocker')
@@ -16,101 +18,139 @@ exports.Browser = async (count,Module,Chrome,BrowserTimeOut=120000,proxyUrl=null
   attempt++;
   isSuccess=false;
   var page;
-  if(await proxyUrl != null)
-  {
-    console.log("Proxy used : "+await proxyUrl+":"+await proxyUser+":"+await proxyPass);
-        // const page = await browser.newPage();
-    browser = await puppeteer.launch({
-      userDataDir: './Log/Temp_Cache.txt',
-        args: [
-          '--use-gl=egl',
-          // '--disable-web-security',
-          // '--disable-features=IsolateOrigins',
-          // '--disable-site-isolation-trials',
-          '--no-sandbox',
-          '--disable-setuid-sandbox',
-          '--window-size=1280x720',
-          // '--disable-accelerated-2d-canvas',
-          // '--no-zygote',
-          // '--renderer-process-limit=1',
-          // '--no-first-run',
-          '--ignore-certificate-errors',
-          '--ignore-certificate-errors-spki-list',
-          // '--disable-dev-shm-usage',
-          // '--disable-infobars',
-          '--lang=en-US,en',
-          '--window-size=1920x1080',
-          // '--disable-extensions',
-          // '--disable-blink-features=AutomationControlled',
-          '--proxy-server=http://'+await proxyUrl
-        ], 
-        headless: false, 
-        // slowMo: 150,
-        executablePath: Chrome ,
-        // devtools: true
-      });
+  var isbrowserFinished = false;
+  var browserLoading;
+  do{ // manage browser if error 
     
-    if((await browser.pages())[count] == null)
-    {
-      console.log("Generating Browser");
-      page = await browser.newPage();
-    }else{
-      console.log("Reuse Old Browser");
-      page= (await browser.pages())[count]
-    }
-    cursor = createCursor(page);
-
-    if(proxyUser != null &&proxyPass != null){
-      console.log("authenticating User : "+await proxyUser+" - Pass : "+await proxyPass);
-      await page.authenticate({ 
-        username: await proxyUser, 
-        password: await proxyPass 
-      });
-    }
-  }else{
-    console.log("Proxy used : LocalHost");
-    browser = await puppeteer.launch(
-      { 
-          // devtools: true,
-          userDataDir: './Log/Temp_Cache.txt',
-          executablePath: Chrome,
-          args: [
-            '--use-gl=egl',
-            '--no-sandbox',
-            '--disable-setuid-sandbox',
-            // '--disable-accelerated-2d-canvas',
-            // '--no-zygote',
-            // '--renderer-process-limit=1',
-            // '--no-first-run',
-            '--ignore-certificate-errors',
-            '--ignore-certificate-errors-spki-list',
-            // '--disable-dev-shm-usage',
-            // '--disable-infobars',
-            '--lang=en-US,en',
-            '--window-size=1280x720',
-            // '--disable-extensions',
-            // '--disable-web-security',
-            // '--disable-features=IsolateOrigins',
-            // '--disable-site-isolation-trials',
-            // '--disable-blink-features=AutomationControlled'
-            // '--proxy-server='+ proxyUrl
-            
-          ],
-          // args: ['--proxy-server='+ proxyUrl], 
-          headless: false, 
-          // slowMo: 150,
-      });
-    // page = await browser.newPage();
-    if((await browser.pages())[count] == null)
-    {
-      console.log("Generating Browser");
-      page = await browser.newPage();
-    }else{
-      console.log("Reuse Old Browser");
-      page= (await browser.pages())[count]
-    }
-    proxyUrl = "LocalHost"
-  }
+    browserLoading = new Promise(async function(resolve,reject)
+    {    
+      try{
+        if(await proxyUrl != null)
+        {
+          console.log("Proxy used : "+await proxyUrl+":"+await proxyUser+":"+await proxyPass);
+              // const page = await browser.newPage();
+          browser = await puppeteer.launch({
+            userDataDir: './Log/Temp_Cache.txt',
+              args: [
+                '--use-gl=egl',
+                // '--disable-web-security',
+                // '--disable-features=IsolateOrigins',
+                // '--disable-site-isolation-trials',
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+                '--window-size=1280x720',
+                // '--disable-accelerated-2d-canvas',
+                // '--no-zygote',
+                // '--renderer-process-limit=1',
+                // '--no-first-run',
+                '--ignore-certificate-errors',
+                '--ignore-certificate-errors-spki-list',
+                // '--disable-dev-shm-usage',
+                // '--disable-infobars',
+                '--lang=en-US,en',
+                '--window-size=1920x1080',
+                // '--disable-extensions',
+                // '--disable-blink-features=AutomationControlled',
+                '--proxy-server=http://'+await proxyUrl
+              ], 
+              headless: false, 
+              // slowMo: 150,
+              
+                executablePath: Chrome ,
+              
+              // devtools: true
+            });
+          
+          if((await browser.pages())[count] == null)
+          {
+            console.log("Generating Browser");
+            page = await browser.newPage();
+          }else{
+            console.log("Reuse Old Browser");
+            page= (await browser.pages())[count]
+          }
+          cursor = createCursor(page);
+      
+          if(proxyUser != null &&proxyPass != null){
+            console.log("authenticating User : "+await proxyUser+" - Pass : "+await proxyPass);
+            await page.authenticate({ 
+              username: await proxyUser, 
+              password: await proxyPass 
+            });
+          }
+        }else{
+          console.log("Proxy used : LocalHost");
+          browser = await puppeteer.launch(
+            { 
+                // devtools: true,
+                userDataDir: './Log/Temp_Cache.txt',
+                executablePath: Chrome,
+                args: [
+                  '--use-gl=egl',
+                  '--no-sandbox',
+                  '--disable-setuid-sandbox',
+                  // '--disable-accelerated-2d-canvas',
+                  // '--no-zygote',
+                  // '--renderer-process-limit=1',
+                  // '--no-first-run',
+                  '--ignore-certificate-errors',
+                  '--ignore-certificate-errors-spki-list',
+                  // '--disable-dev-shm-usage',
+                  // '--disable-infobars',
+                  '--lang=en-US,en',
+                  '--window-size=1280x720',
+                  // '--disable-extensions',
+                  // '--disable-web-security',
+                  // '--disable-features=IsolateOrigins',
+                  // '--disable-site-isolation-trials',
+                  // '--disable-blink-features=AutomationControlled'
+                  // '--proxy-server='+ proxyUrl
+                  
+                ],
+                // args: ['--proxy-server='+ proxyUrl], 
+                headless: false, 
+                // slowMo: 150,
+            });
+          // page = await browser.newPage();
+          if((await browser.pages())[count] == null)
+          {
+            console.log("Generating Browser");
+            page = await browser.newPage();
+          }else{
+            console.log("Reuse Old Browser");
+            page= (await browser.pages())[count]
+          }
+          proxyUrl = "LocalHost"
+        }
+        resolve(await browser);
+      }catch(e)
+      {
+        console.log("Browser Error Log : "+await e);
+        var checker = false;
+        do{
+          var ChromeLocation = readlineSync.question('ChromeFile is not found \n'+
+           'Please Input the correct location : ');
+          if(ChromeLocation == null)
+          {
+            console.log('ChromeFile is cannot be null \n');
+          }else{
+            checker = true;
+            Chrome = await DM.SetChromeFile(ChromeLocation);
+          }
+        }while(!checker)
+        reject(e);
+      }
+    }).then(
+      function(value){
+        isbrowserFinished = true;
+        return await value;
+      },function(error)
+      {
+        isbrowserFinished = false;
+        return false;
+      }
+    );
+  }while(!isbrowserFinished)
   
   await Promise.all([
     await page.coverage.startJSCoverage(),

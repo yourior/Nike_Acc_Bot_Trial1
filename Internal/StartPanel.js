@@ -7,7 +7,7 @@ var fs = require('fs').promises;
 var ProfileGenerator = require('random-profile-generator');
 var EmailDomain = '@gmail.com';
 var emailVal = 'TesterEmail' + '.' + (Math.floor((Math.random() * 9000) + 1000)).toString() + '@gmail.com';
-
+const DM = require('./DeviceManager');
 // var OTP_API = '88862e0e304d3e6dce193d1771ffb5A5';
 var OTP_Region_Code = '10';
 var passwordVal = 'Alkaline@tester123';
@@ -23,8 +23,8 @@ var GenderVal = null;
 
 var RegionVal='Vietnam';
 var NikeWeb = 'https://www.nike.com/';
-var Chrome_Ubuntu = '/usr/bin/google-chrome';
-var Chrome_Windows = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
+// var Chrome_Ubuntu = '/usr/bin/google-chrome';
+// var Chrome_Windows = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 // var DiscordWebhook_Link = 'https://discord.com/api/webhooks/952973421443153960/_Vl9DMoaUo51C4zPRzyHMx-IKW17VIcGrVSt4CATnS7rEuv9Idp7Q9KTK_T_hgZK-pEX';
 exports.Cluster = async(maxConcurrency)=>
 {
@@ -55,6 +55,7 @@ exports.Cluster = async(maxConcurrency)=>
 }
 exports.Run = async (browserCount,BrowserTimeOut= 120000,proxyUrl,CustomPass = null) =>
 {
+  DM.SetDefaultChromeFile(); // set Default Chrome File
   console.log("Start Panel Proxy : "+await proxyUrl);
   if(CustomPass != null)
   {
@@ -101,8 +102,8 @@ exports.Run = async (browserCount,BrowserTimeOut= 120000,proxyUrl,CustomPass = n
           console.log("ProxyName = "+proxyUser);
           console.log("proxyPass = "+proxyPass);
         }
-  
-          var create = await Browser.Browser(browserCount-1,"Create Account",Chrome_Windows,BrowserTimeOut,proxyUrl,proxyUser,proxyPass,emailVal,passwordVal,fNameVal,sNameVal,bDayVal,
+          const ChromeFile = await DM.GetChromeFile();
+          var create = await Browser.Browser(browserCount-1,"Create Account",ChromeFile,BrowserTimeOut,proxyUrl,proxyUser,proxyPass,emailVal,passwordVal,fNameVal,sNameVal,bDayVal,
               GenderVal,OTPProvider='SMS-Activate');
           console.log("Test Log : "+JSON.stringify(create));
           if(create.status == true)
