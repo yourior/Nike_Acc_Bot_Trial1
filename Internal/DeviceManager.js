@@ -5,7 +5,7 @@
 // console.log('result parse', result);
 
 const { platform } = require('node:process');
-
+var fs = require('fs');
 var Chrome_Ubuntu = '/usr/bin/google-chrome';
 var Chrome_Windows = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'
 // console.log(`This platform is ${platform}`);
@@ -35,4 +35,11 @@ exports.SetChromeFile = async(ChromeFile) =>
 exports.GetChromeFile = async() =>
 {
     return await this.ChromeFile;
+}
+exports.TestRun = async() =>
+{
+    console.log("Chrome Location : "+await this.ChromeFile);
+    fs.access(await this.ChromeFile, fs.constants.X_OK, (err) => {
+        console.log(err ? 'cannot execute' : 'can execute');
+    });
 }

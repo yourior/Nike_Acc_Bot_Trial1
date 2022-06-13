@@ -55,7 +55,8 @@ exports.Cluster = async(maxConcurrency)=>
 }
 exports.Run = async (browserCount,BrowserTimeOut= 120000,proxyUrl,CustomPass = null) =>
 {
-  DM.SetDefaultChromeFile(); // set Default Chrome File
+  await DM.SetDefaultChromeFile(); // set Default Chrome File
+  await DM.TestRun();
   console.log("Start Panel Proxy : "+await proxyUrl);
   if(CustomPass != null)
   {

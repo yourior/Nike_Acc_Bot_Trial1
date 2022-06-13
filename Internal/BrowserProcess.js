@@ -1,4 +1,5 @@
 const puppeteer = require('puppeteer-extra');
+const randomUseragent = require('random-useragent');
 const { createCursor } = require ("ghost-cursor");
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 var readlineSync = require('readline-sync');
@@ -19,18 +20,15 @@ exports.Browser = async (count,Module,Chrome,BrowserTimeOut=120000,proxyUrl=null
   isSuccess=false;
   var page;
   var isbrowserFinished = false;
-  var browserLoading;
-  do{ // manage browser if error 
-    
-    browserLoading = new Promise(async function(resolve,reject)
-    {    
+  // var browserLoading;
+  
       try{
         if(await proxyUrl != null)
         {
           console.log("Proxy used : "+await proxyUrl+":"+await proxyUser+":"+await proxyPass);
               // const page = await browser.newPage();
           browser = await puppeteer.launch({
-            userDataDir: './Log/Temp_Cache.txt',
+            // userDataDir: './Log/Temp_Cache.txt',
               args: [
                 '--use-gl=egl',
                 // '--disable-web-security',
@@ -83,7 +81,7 @@ exports.Browser = async (count,Module,Chrome,BrowserTimeOut=120000,proxyUrl=null
           browser = await puppeteer.launch(
             { 
                 // devtools: true,
-                userDataDir: './Log/Temp_Cache.txt',
+                // userDataDir: './Log/Temp_Cache.txt',
                 executablePath: Chrome,
                 args: [
                   '--use-gl=egl',
@@ -122,36 +120,33 @@ exports.Browser = async (count,Module,Chrome,BrowserTimeOut=120000,proxyUrl=null
           }
           proxyUrl = "LocalHost"
         }
-        resolve(await browser);
+        // resolve(await browser);
       }catch(e)
       {
         console.log("Browser Error Log : "+await e);
-        var checker = false;
-        do{
-          var ChromeLocation = readlineSync.question('ChromeFile is not found \n'+
-           'Please Input the correct location : ');
-          if(ChromeLocation == null)
-          {
-            console.log('ChromeFile is cannot be null \n');
-          }else{
-            checker = true;
-            Chrome = await DM.SetChromeFile(ChromeLocation);
-          }
-        }while(!checker)
-        reject(e);
+        // var checker = false;
+        // do{
+        //   var ChromeLocation = readlineSync.question('ChromeFile is not found \n'+
+        //    'Please Input the correct location : ');
+        //   if(ChromeLocation == null)
+        //   {
+        //     console.log('ChromeFile is cannot be null \n');
+        //   }else{
+        //     checker = true;
+        //     Chrome = await DM.SetChromeFile(ChromeLocation);
+        //   }
+        // }while(!checker)
+        // reject(e);
       }
-    }).then(
-      function(value){
-        isbrowserFinished = true;
-        return await value;
-      },function(error)
-      {
-        isbrowserFinished = false;
-        return false;
-      }
-    );
-  }while(!isbrowserFinished)
-  
+  //set User Agent - Random
+  console.log("Set User Agent");
+  var userAgent = await randomUseragent.getRandom(); 
+  await page.setUserAgent(
+    userAgent
+    // randomUseragent.getRandom() 
+    // 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36'
+  );
+  ///////////////////////
   await Promise.all([
     await page.coverage.startJSCoverage(),
     await page.coverage.startCSSCoverage(),

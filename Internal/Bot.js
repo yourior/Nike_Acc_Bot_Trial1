@@ -2,8 +2,10 @@
 var puppeteer = require('puppeteer-extra');
 // var {TimeoutError} = require('puppeteer/Errors');
 // var SMSActivate = require('sms-activate');
+const DM = require('./DeviceManager');
 var { createCursor } = require ("ghost-cursor");
 var StealthPlugin = require('puppeteer-extra-plugin-stealth');
+var { $ } = require( "puppeteer-shadow-selector");
 // var request = require('request');
 var fs = require('fs').promises;
 puppeteer.use(StealthPlugin());
@@ -13,27 +15,14 @@ puppeteer.use(AdblockerPlugin({ blockTrackers: true }))
 var {installMouseHelper} = require('./mouse-view');
 var SMS = require('./SMS_Activate');
 
-// var emailVal = 'TesterEmail' + '.' + (Math.floor((Math.random() * 9000) + 1000)).toString() + '@nguyenluck.com';
-// var smsEmail = 'ENTER GETSMSCODE.COM EMAIL ADDRESS';
-// var token = 'ENTER GETSMSCODE API TOKEN';
-// var passwordVal = 'Alkaline@tester123';
-// var fNameVal = 'BAKAYAROU';
-// var sNameVal = 'BAKA';
-// var bDayVal = '01/05/19'+(Math.floor((Math.random() * (99-55)) + 55)).toString(); //Replace with your birthday if you wish.
-// var proxyUrl = ''; //if proxy exists enter it in format IP:PORT, if not leave blank
-// var proxyUser = ''; //If proxy username/pass exists insert it here if not leave both variables blank
-// var proxyPass = '';
-// var info;
+
 var themessage;
 var AgreeButton_Before = '//*[@id="progressiveMobile"]'
-// var phoneNum;
-// var userpass;
-// var RegionVal='Vietnam';
 var Region = require('./RegionManager');
 var NikeWeb = 'https://www.nike.com/';
-// var Chrome_Ubuntu = '/usr/bin/google-chrome';
-// var Chrome_Windows = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 // From Main DashBoard
+var Register_Linux = '#gen-nav-commerce-header-v2 > div.pre-l-header-container > div.pre-l-brand-header.d-sm-h.d-lg-b.z3 > div > div > div:nth-child(3) > div > a > span';
+var Register_From_Login = '#a8fec86a-955c-400c-8ec4-5e476f8ce738';
 var AgreeButton_Missclick1 = '#legalContainer > ul:nth-child(3) > ul > li:nth-child(1) > a';
 var AgreeButton_Missclick2 = '#legalContainer > p:nth-child(5) > strong > a:nth-child(1)';
 var Menu_Option_NONFULL = '#MobileMenuButton';
@@ -165,7 +154,7 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
   console.log("The Bot is starting...");
   try{
     
-      ReuseCookies(page);
+      // ReuseCookies(page);
       cursor = createCursor(page);
 
       await installMouseHelper(page);//VIEW MOUSE
@@ -207,19 +196,28 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         //////////
         var Rando_Delay;
         console.log("Looking for register Button (1)");
-        // // FULL VIEW
-        // await page.waitForSelector(Dashboard_Signup_1,{visible: true, hidden: false});
-        // await cursor.move(Dashboard_Signup_1);
+        var device = await DM.DeviceDetect();
+        if(device == 'linux')
+        {
+            // this.ChromeFile = await Chrome_Ubuntu;
+            // // FULL VIEW
+            await page.waitForSelector(Register_Linux,{visible: true, hidden: false});
+            await cursor.move(Register_Linux);
+            await page.focus(Register_Linux);
+            await cursor.click();
+            // //////////////////
+        }else if(device == 'win32')
+        {
+            // return this.ChromeFile = await Chrome_Windows;
+            await page.waitForSelector(Menu_Option_NONFULL,{visible: true, hidden: false});
+            await cursor.move(Menu_Option_NONFULL);
+            await page.focus(Menu_Option_NONFULL);
+            await cursor.click();
+        }
+        // await page.waitForSelector(DashBoard_SignUp_NONFULL,{visible: true, hidden: false});
+        // await cursor.move(DashBoard_SignUp_NONFULL);
+        // await page.focus(DashBoard_SignUp_NONFULL);
         // await cursor.click();
-        // //////////////////
-        await page.waitForSelector(Menu_Option_NONFULL,{visible: true, hidden: false});
-        await cursor.move(Menu_Option_NONFULL);
-        await page.focus(Menu_Option_NONFULL);
-        await cursor.click();
-        await page.waitForSelector(DashBoard_SignUp_NONFULL,{visible: true, hidden: false});
-        await cursor.move(DashBoard_SignUp_NONFULL);
-        await page.focus(DashBoard_SignUp_NONFULL);
-        await cursor.click();
         console.log("Register Button (1) Clicked");
 
         // console.log("Join us Layout is Loading");
@@ -236,6 +234,19 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         console.log("Register Page is Loading");
         await page.waitForNavigation({ waitUntil: 'networkidle0' });
         console.log("Register Page is Loaded");
+
+        try{
+          console.log("Checking if redirected to Login Page");
+          await page.waitForSelector(Register_From_Login);
+          console.log("Login Panel Detected");
+          await cursor.move(Register_From_Login);
+          await page.focus(Register_From_Login);
+          await cursor.click();
+          console.log("Register Button (2) Clicked");
+        }catch(err)
+        {
+          console.log("it is not redirected to Login Screen, Continue Registering");
+        }
 
         var passedSignIn = false,attemptSignin=0,trySignIn= 3;
         while(!passedSignIn )
