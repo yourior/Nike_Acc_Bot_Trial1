@@ -162,10 +162,10 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
 
       await installMouseHelper(page);//VIEW MOUSE
       // await page.goto('https://www.nike.com/vn/launch',{waitUntil: 'networkidle2'});
-      await page.goto(NikeWeb,{waitUntil: 'networkidle0'});
+      await page.goto(NikeWeb,{waitUntil: 'networkidle2'});
         // await page.setViewport({ width: 1280, height: 720 });
-        await page.waitForXPath(Test_Xpath_Selector);
-        console.log(await page.$x(Test_Xpath_Selector))[0];
+        // await page.waitForXPath(Test_Xpath_Selector);
+        // console.log(await page.$x(Test_Xpath_Selector))[0];
         //Get Region Picker
         console.log("Get Region Picker");
         await page.waitForSelector(Dasboard_RegionPicker,{visible: true, hidden: false});
@@ -225,7 +225,7 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         console.log("Register Button (1) Clicked");
 
         // console.log("Join us Layout is Loading");
-        // await page.waitForNavigation({waitUntil: 'networkidle0'});
+        // await page.waitForNavigation({waitUntil: 'networkidle2'});
         // console.log("Join us Layout is Loaded");
 
         console.log("Looking for register Button (2)");
@@ -236,7 +236,7 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         console.log("Register Button (2) Clicked");
 
         console.log("Register Page is Loading");
-        await page.waitForNavigation({ waitUntil: 'networkidle0' });
+        await page.waitForNavigation({ waitUntil: 'networkidle2' });
         console.log("Register Page is Loaded");
 
         try{
@@ -245,7 +245,15 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
 
           console.log("Login Panel Detected");
           let el =await page.$x(Register_From_Login_Xpath);
-          await el[0].click();
+          console.log(await el);
+          await page.evaluate(ele => {
+            // do what you want with featureArticle in page.evaluate
+            console.log(ele);
+            return ele
+          },await el[0]);
+          // console.log(await text);
+          await sleep(60000);
+          // await el[0].click();
           console.log("Register Button (2) Clicked");
         }catch(err)
         {
@@ -441,7 +449,7 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         await cursor.click();
 
         console.log("submitted");
-        // await page.waitForNavigation({ waitUntil: 'networkidle0' });
+        // await page.waitForNavigation({ waitUntil: 'networkidle2' });
 
         console.log("email : "+emailVal+" - pass : "+passwordVal);
 
@@ -456,7 +464,7 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
 
         //RELOAD MAIN MENU
         console.log("Waiting for Approval Cookies (Main Menu Logged in)");
-        await page.waitForNavigation({ waitUntil: 'networkidle0' });
+        await page.waitForNavigation({ waitUntil: 'networkidle2' });
         console.log("Approved Cookies");
         //
         
@@ -473,7 +481,7 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         await cursor.click();
 
         console.log("Waiting for Approval Cookies (Profile Section)");
-        await page.waitForNavigation({ waitUntil: 'networkidle0' });
+        await page.waitForNavigation({ waitUntil: 'networkidle2' });
         console.log("Approved Cookies");
 
         console.log("Go to Profile Section, Looking for Account Setting Button");
@@ -483,7 +491,7 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
         console.log("Account Setting Found");
 
         console.log("Waiting for Approval Cookies (Account Setting)");
-        await page.waitForNavigation({ waitUntil: 'networkidle0' });
+        await page.waitForNavigation({ waitUntil: 'networkidle2' });
         console.log("Approved Cookies");
 
         console.log("Looking for Add Phone Number Button");
