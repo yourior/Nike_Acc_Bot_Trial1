@@ -21,6 +21,7 @@ var AgreeButton_Before = '//*[@id="progressiveMobile"]'
 var Region = require('./RegionManager');
 var NikeWeb = 'https://www.nike.com/';
 // From Main DashBoard
+var Test_Xpath_Selector ='/html/body/div[5]/div/footer/div/div[2]/div[1]/div/a';
 var Register_From_Login_Xpath = '/html/body/div[4]/div/div[1]/div/div[6]/form/div[7]/a';
 var Register_Linux = '#gen-nav-commerce-header-v2 > div.pre-l-header-container > div.pre-l-brand-header.d-sm-h.d-lg-b.z3 > div > div > div:nth-child(3) > div > a > span';
 var Register_From_Login = '#a8fec86a-955c-400c-8ec4-5e476f8ce738';
@@ -150,6 +151,7 @@ async function ReuseCookies(page)
   }
   
 }
+
 // var page;
 exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayVal,GenderVal,OTPProvider='SMS-Activate') => {
   console.log("The Bot is starting...");
@@ -162,7 +164,8 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
       // await page.goto('https://www.nike.com/vn/launch',{waitUntil: 'networkidle2'});
       await page.goto(NikeWeb,{waitUntil: 'networkidle0'});
         // await page.setViewport({ width: 1280, height: 720 });
-
+        await page.waitForXPath(Test_Xpath_Selector);
+        console.log(await page.$x(Test_Xpath_Selector))[0];
         //Get Region Picker
         console.log("Get Region Picker");
         await page.waitForSelector(Dasboard_RegionPicker,{visible: true, hidden: false});
