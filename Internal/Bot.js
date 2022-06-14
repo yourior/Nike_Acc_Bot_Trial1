@@ -21,6 +21,7 @@ var AgreeButton_Before = '//*[@id="progressiveMobile"]'
 var Region = require('./RegionManager');
 var NikeWeb = 'https://www.nike.com/';
 // From Main DashBoard
+var Register_From_Login_Xpath = '/html/body/div[4]/div/div[1]/div/div[6]/form/div[7]/a';
 var Register_Linux = '#gen-nav-commerce-header-v2 > div.pre-l-header-container > div.pre-l-brand-header.d-sm-h.d-lg-b.z3 > div > div > div:nth-child(3) > div > a > span';
 var Register_From_Login = '#a8fec86a-955c-400c-8ec4-5e476f8ce738';
 var AgreeButton_Missclick1 = '#legalContainer > ul:nth-child(3) > ul > li:nth-child(1) > a';
@@ -213,11 +214,11 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
             await cursor.move(Menu_Option_NONFULL);
             await page.focus(Menu_Option_NONFULL);
             await cursor.click();
+            await page.waitForSelector(DashBoard_SignUp_NONFULL,{visible: true, hidden: false});
+            await cursor.move(DashBoard_SignUp_NONFULL);
+            await page.focus(DashBoard_SignUp_NONFULL);
+            await cursor.click();
         }
-        // await page.waitForSelector(DashBoard_SignUp_NONFULL,{visible: true, hidden: false});
-        // await cursor.move(DashBoard_SignUp_NONFULL);
-        // await page.focus(DashBoard_SignUp_NONFULL);
-        // await cursor.click();
         console.log("Register Button (1) Clicked");
 
         // console.log("Join us Layout is Loading");
@@ -237,11 +238,11 @@ exports.Create = async (page,cursor,emailVal,passwordVal,fNameVal,sNameVal,bDayV
 
         try{
           console.log("Checking if redirected to Login Page");
-          await page.waitForSelector(Register_From_Login);
+          await page.waitForXPath(Register_From_Login_Xpath);
+
           console.log("Login Panel Detected");
-          await cursor.move(Register_From_Login);
-          await page.focus(Register_From_Login);
-          await cursor.click();
+          let el =await page.$x(Register_From_Login_Xpath);
+          await el[0].click();
           console.log("Register Button (2) Clicked");
         }catch(err)
         {

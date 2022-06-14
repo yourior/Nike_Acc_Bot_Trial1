@@ -95,13 +95,22 @@ function end() {
     {
         Discord.registerDiscordWebhook(await SettingLocation.DiscordWebhook_Link);
     }
-   
 
     var TotalAccGen = readlineSync.question('Total Acc Gen : ');
-    var CustomPassword = readlineSync.question('Input Custom Password (if there is any) : ');
+    try{
+        var CustomPassword = readlineSync.question('Input Custom Password (if there is any) : ');
+        if(CustomPassword.length < 8)
+        {
+            CustomPassword = "DefaultP@ssw0rd";
+            console.log("Using Default Pass : "+CustomPassword);
+        }
+    }catch(err)
+    {
+        console.log("Password Error Log : "+err);
+        process.exit();
+    }
     var TotalAttempt = readlineSync.question('Total Attempt : ');
-    console.log(TotalAccGen+" "+CustomPassword+" "+TotalAttempt);
-    
+    console.log("Target Acc Gen : "+TotalAccGen+" - Password : "+CustomPassword+" - TotalAttemptGiven : "+TotalAttempt);
     var attempt=0;acc_gen=0,errorcount=0,attempt=0,proxy_run=null,BrowserCount=1;
 
     if(ProxyLocation != null)
@@ -109,21 +118,18 @@ function end() {
         console.log("Proxy Count : "+ ProxyLocation.length);
     }
     start();
-    while(TotalAccGen>acc_gen && TotalAttempt>=attempt)
+    while(TotalAccGen>acc_gen && TotalAttempt>attempt)
     {
         try{
+            attempt++;
             console.log("Status : \n Total Acc Gen/Target Acc Gen/Attempt : "+await acc_gen+"/"+TotalAccGen+"/"+attempt);
             if(ProxyLocation!=null)
             {
                 proxy_run = ProxyLocation[attempt%ProxyLocation.length];
                 console.log(proxy_run);
             }
-            attempt++;
             console.log("Running Acc Gen");
-            if(CustomPassword == null)
-            {
-                CustomPassword = "DefaultP@ssw0rd";
-            }
+            
             await Region.GetRegion();
             var result = await RunBot.Run(BrowserCount,120000,proxy_run,CustomPassword);
             if(result.status)
